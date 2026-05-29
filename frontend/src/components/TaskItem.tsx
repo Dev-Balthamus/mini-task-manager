@@ -13,7 +13,7 @@ function TaskItem({ item }: { item: Task }) {
   }
 
   return (
-    <li className="taskItem">
+    <li className={`taskItem ${isChecked === true ? "taskItemExecuted" : ""}`}>
       <div className="taskItemTitle">
         <h3>{item.title}</h3>
         <p>{item.description}</p>
@@ -23,13 +23,7 @@ function TaskItem({ item }: { item: Task }) {
       </div>
       <div className="taskItemStatus">
         <h3>Executed</h3>
-        <input
-          type="checkbox"
-          className={`taskItemStatusCheckbox ${isChecked === true ? "taskItemExecuted" : ""}`}
-          checked={isChecked}
-          onChange={toggleChecked}
-          readOnly
-        />
+        <input type="checkbox" className="taskItemStatusCheckbox" checked={isChecked} onChange={toggleChecked} readOnly />
       </div>
       <div className="taskItemActions">
         <button className="taskItemModify" onClick={openModal}>
