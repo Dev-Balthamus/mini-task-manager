@@ -1,4 +1,17 @@
-function TaskItem({ item }) {
+import type { Task } from "../assets/custom-hooks/useTasksJSON";
+import { useState } from "react";
+import TaskForm from "./TaskForm";
+
+function TaskItem({ item }: { item: Task }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const [isChecked, setIsChecked] = useState(false);
+
+  function toggleChecked() {
+    setIsChecked(!isChecked);
+  }
+
   return (
     <li className="taskItem">
       <div className="taskItemTitle">
@@ -10,10 +23,19 @@ function TaskItem({ item }) {
       </div>
       <div className="taskItemStatus">
         <h3>Executed</h3>
-        <input type="checkbox" className="taskItemStatusCheckbox" checked={item.completed} readOnly />
+        <input
+          type="checkbox"
+          className={`taskItemStatusCheckbox ${isChecked === true ? "taskItemExecuted" : ""}`}
+          checked={isChecked}
+          onChange={toggleChecked}
+          readOnly
+        />
       </div>
       <div className="taskItemActions">
-        <button className="taskItemModify">Modify</button>
+        <button className="taskItemModify" onClick={openModal}>
+          Modify
+        </button>
+        <TaskForm isOpen={isModalOpen} whyIsOpen="editTask" onClose={closeModal} />
         <button className="taskItemDelete">Delete</button>
       </div>
     </li>

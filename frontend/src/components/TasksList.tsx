@@ -1,9 +1,10 @@
+import type { Task } from "../assets/custom-hooks/useTasksJSON";
 import TaskItem from "./TaskItem";
 
-function TasksList({ items }) {
+function TasksList({ items }: { items: Task[] }) {
   return (
     <ul>
-      {items.map((item) => (
+      {items.map((item: Task) => (
         <TaskItem key={item.id} item={item} />
       ))}
     </ul>
