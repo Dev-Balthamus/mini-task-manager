@@ -1,11 +1,11 @@
 import type { Task } from "../assets/custom-hooks/useTasksJSON";
 import { useState } from "react";
+import { useModal } from "../assets/custom-hooks/useModal";
 import TaskForm from "./TaskForm";
 
 function TaskItem({ item }: { item: Task }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const { isModalOpen, openModal, closeModal } = useModal();
+
   const [isChecked, setIsChecked] = useState(false);
 
   function toggleChecked() {
@@ -29,7 +29,7 @@ function TaskItem({ item }: { item: Task }) {
         <button className="taskItemModify" onClick={openModal}>
           Modify
         </button>
-        <TaskForm isOpen={isModalOpen} whyIsOpen="editTask" onClose={closeModal} />
+        <TaskForm isOpen={isModalOpen} whyIsOpen={item.id} onClose={closeModal} />
         <button className="taskItemDelete">Delete</button>
       </div>
     </li>

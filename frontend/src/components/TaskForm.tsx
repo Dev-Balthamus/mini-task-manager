@@ -1,11 +1,6 @@
 import { useState } from "react";
 import type { Task } from "../assets/custom-hooks/useTasksJSON";
-
-interface Modal {
-  isOpen: boolean;
-  whyIsOpen: string;
-  onClose: () => void;
-}
+import type { Modal } from "../assets/custom-hooks/useModal";
 
 function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   if (!isOpen) return null;
@@ -13,7 +8,102 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
-  let newTask: Task | null = null;
+
+  function handleTaskCreation(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    let newTask: Task | null = null;
+
+    if (!title || !priority) {
+      alert("Title and Priority fields are required.");
+      return;
+    }
+
+    if (title && priority) {
+      newTask = {
+        id: Date.now(),
+        title,
+        description,
+        priority,
+      };
+
+      addTask(newTask);
+
+      setTitle("");
+      setDescription("");
+      setPriority("");
+    }
+
+    async function addTask(task: Task) {
+      try {
+        const response = await fetch("http://localhost:3000/api/tasks", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(task),
+        });
+
+        if (response.status !== 200) {
+          throw new Error("Error in creating the new Task");
+        }
+
+        const addedTask = await response.json();
+        return addedTask;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    onClose();
+  }
+
+  function handleTaskEditing(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    let editedTask: Task;
+
+    if (!title || !priority) {
+      alert("Title and Priority fields are required.");
+      return;
+    }
+
+    if (title && priority) {
+      editedTask = {
+        id: whyIsOpen as number,
+        title,
+        description,
+        priority,
+      };
+
+      editTask(editedTask);
+
+      setTitle("");
+      setDescription("");
+      setPriority("");
+    }
+
+    async function editTask(task: Task) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/tasks/${whyIsOpen as number}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(task),
+        });
+
+        if (response.status !== 200) {
+          throw new Error("Error in updating the Task");
+        }
+
+        const editedTask = await response.json();
+        return editedTask;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    onClose();
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -22,10 +112,16 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
           "e.stopPropagation()" evita la chiusura della modale se si clicca in essa. */}
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
         {whyIsOpen === "createTask" && <h2>Create New Task</h2>}
-        {whyIsOpen === "editTask" && <h2>Edit SelectedTask</h2>}
+        {whyIsOpen === "editTask" && <h2>Edit Selected Task</h2>}
         <button onClick={onClose}>&times;</button>
         <form className="formContainer">
-          <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} className="formTextInput" />
+          <input
+            type="text"
+            placeholder="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="formTextInput"
+          />
           <input
             type="text"
             placeholder="Description"
@@ -44,7 +140,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
               Create Task
             </button>
           )}
-          {whyIsOpen === "editTask" && (
+          {(whyIsOpen as number) && (
             <button type="submit" className="formSubmit" onClick={handleTaskEditing}>
               Edit Task
             </button>

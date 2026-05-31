@@ -37,5 +37,5 @@ export function useTasksJSON() {
     fetchTasksJSON();
   }, []);
 
-  return { loading, error, data };
+  return { loading, error, data, onReloadTasks: fetchTasksJSON };
 }
