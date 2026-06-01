@@ -16,7 +16,7 @@ function TaskManagerContainer() {
         </button>
         <TaskForm isOpen={isModalOpen} whyIsOpen="createTask" onClose={closeModal} />
       </div>
-      <Filters />
+
       <div className="tasksContainer">
         {loading && <h2>Loading Tasks' List...</h2>}
         {error && <h2>Error loading Tasks' List: {error.message}</h2>}
@@ -27,7 +27,12 @@ function TaskManagerContainer() {
             Let's create the first task!
           </h2>
         )}
-        {tasks && <TasksList items={tasks} />}
+        {tasks && (
+          <>
+            <Filters />
+            <TasksList items={tasks} />
+          </>
+        )}
       </div>
     </>
   );

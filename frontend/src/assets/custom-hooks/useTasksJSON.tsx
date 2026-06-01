@@ -5,6 +5,7 @@ export interface Task {
   title: string;
   description: string;
   priority: string;
+  executed: boolean;
 }
 
 export function useTasksJSON() {

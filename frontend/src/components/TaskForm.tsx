@@ -24,6 +24,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
         title,
         description,
         priority,
+        executed: false,
       };
 
       addTask(newTask);
@@ -72,6 +73,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
         title,
         description,
         priority,
+        executed: false,
       };
 
       editTask(editedTask);

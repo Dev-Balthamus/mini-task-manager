@@ -6,14 +6,14 @@ import TaskForm from "./TaskForm";
 function TaskItem({ item }: { item: Task }) {
   const { isModalOpen, openModal, closeModal } = useModal();
 
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(item.executed);
 
   function toggleChecked() {
     setIsChecked(!isChecked);
   }
 
   return (
-    <li className={`taskItem ${isChecked === true ? "taskItemExecuted" : ""}`}>
+    <li className={`taskItem ${item.executed === true ? "taskItemExecuted" : ""}`}>
       <div className="taskItemTitle">
         <h3>{item.title}</h3>
         <p>{item.description}</p>
@@ -23,7 +23,13 @@ function TaskItem({ item }: { item: Task }) {
       </div>
       <div className="taskItemStatus">
         <h3>Executed</h3>
-        <input type="checkbox" className="taskItemStatusCheckbox" checked={isChecked} onChange={toggleChecked} readOnly />
+        <input
+          type="checkbox"
+          className="taskItemStatusCheckbox"
+          checked={item.executed}
+          onChange={toggleChecked}
+          readOnly
+        />
       </div>
       <div className="taskItemActions">
         <button className="taskItemModify" onClick={openModal}>

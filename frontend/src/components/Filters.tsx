@@ -1,20 +1,35 @@
+import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
+
 function Filters() {
+  const { orderCriterion, orderTasks } = useTaskEditor();
+
+  function handleFilterChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const selectedCriterion = event.target.value as any;
+    orderTasks(selectedCriterion);
+  }
+
   return (
     <div className="filtersContainer">
       <h5 className="filtersTitle">Filters</h5>
-      <select className="priorityFilter">
-        <option value="low" onSelect={handlePrioritySelection}>
+      <select className="priorityFilter" value={orderCriterion} onChange={handleFilterChange}>
+        <option value="" disabled>
+          Order by Priority...
+        </option>
+        <option value="low" className={orderCriterion === "low" ? "selected" : ""}>
           from Low to High
         </option>
-        <option value="high" onSelect={handlePrioritySelection}>
+        <option value="high" className={orderCriterion === "high" ? "selected" : ""}>
           from High to Low
         </option>
       </select>
-      <select className="executedFilter">
-        <option value="yes" onSelect={handleExecutedSelection}>
+      <select className="executedFilter" value={orderCriterion} onChange={handleFilterChange}>
+        <option value="" disabled>
+          Filter by Execution Status...
+        </option>
+        <option value="executed" className={orderCriterion === "executed" ? "selected" : ""}>
           Executed Tasks
         </option>
-        <option value="no" onSelect={handleExecutedSelection}>
+        <option value="pending" className={orderCriterion === "pending" ? "selected" : ""}>
           Pending Tasks
         </option>
       </select>
