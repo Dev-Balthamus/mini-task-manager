@@ -1,21 +1,48 @@
+import { type ChangeEvent } from "react";
 import type { Task } from "../assets/custom-hooks/useTasksJSON";
-import { useState } from "react";
 import { useModal } from "../assets/custom-hooks/useModal";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import TaskForm from "./TaskForm";
 
 function TaskItem({ item }: { item: Task }) {
   const { isModalOpen, openModal, closeModal } = useModal();
+  const { reloadTasks } = useTaskEditor();
 
-  const [isChecked, setIsChecked] = useState(item.executed);
+  async function handleExecutedStatusChange(e: ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
 
-  function toggleChecked() {
-    setIsChecked(!isChecked);
+    const nextExecutedStatus = e.target.checked;
 
-    //Still to add a function to edit the task's "executed" property in the backend, to make the filter working effectively.
+    const editedTask = {
+      ...item,
+      executed: nextExecutedStatus,
+    };
+
+    await editTask(editedTask);
+
+    await reloadTasks();
   }
 
-  const { reloadTasks } = useTaskEditor();
+  async function editTask(task: Task) {
+    try {
+      const response = await fetch(`http://localhost:3000/api/tasks/${item.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
+      });
+
+      if (response.status !== 200) {
+        throw new Error("Error in updating the Task");
+      }
+
+      const editedTask = await response.json();
+      return editedTask;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async function handleTaskDeletion(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -49,7 +76,7 @@ function TaskItem({ item }: { item: Task }) {
           type="checkbox"
           className="taskItemStatusCheckbox"
           checked={item.executed}
-          onChange={toggleChecked}
+          onChange={handleExecutedStatusChange}
           readOnly
         />
       </div>
