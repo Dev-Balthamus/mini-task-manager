@@ -19,6 +19,7 @@ const taskSchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().optional().allow(""),
   priority: Joi.string().valid("high", "medium", "low").required(),
+  executed: Joi.boolean().required(),
 });
 
 app.use(morgan("dev"));
@@ -28,8 +29,8 @@ app.use(express.json()); // Per permettere a Express di leggere il JSON inviato 
 
 // ENDPOINT CREATE
 app.post("/api/tasks", (req, res) => {
-  const { id, title, description, priority } = req.body; // Questo è l'oggetto inviato da React
-  const newTask = { id, title, description, priority };
+  const { id, title, description, priority, executed } = req.body; // Questo è l'oggetto inviato da React
+  const newTask = { id, title, description, priority, executed };
   const validatedNewTask = taskSchema.validate(newTask);
 
   if (validatedNewTask.error) {
@@ -110,10 +111,11 @@ app.put("/api/tasks/:id", (req, res) => {
     }
 
     //Il task trovato viene aggiornato con i nuovi dati inviati da React
-    const { title, description, priority } = req.body;
+    const { title, description, priority, executed } = req.body;
     task.title = title || task.title;
     task.description = description || task.description;
     task.priority = priority || task.priority;
+    task.executed = executed !== undefined ? executed : task.executed;
 
     // L'array aggiornato viene sovrascritto nel file JSON
     fs.writeFile(tasksJSONPath, JSON.stringify(tasks, null, 2), (err) => {
