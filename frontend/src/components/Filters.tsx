@@ -1,11 +1,11 @@
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 
 function Filters() {
-  const { orderCriterion, orderTasks } = useTaskEditor();
+  const { orderCriterion, toOrderCriterion } = useTaskEditor();
 
   function handleFilterChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedCriterion = event.target.value as any;
-    orderTasks(selectedCriterion);
+    toOrderCriterion(selectedCriterion);
   }
 
   return (

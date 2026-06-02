@@ -18,6 +18,7 @@ function TaskManagerContainer() {
       </div>
 
       <div className="tasksContainer">
+        {tasks && <Filters />}
         {loading && <h2>Loading Tasks' List...</h2>}
         {error && <h2>Error loading Tasks' List: {error.message}</h2>}
         {(!tasks || tasks.length === 0) && (
@@ -27,12 +28,7 @@ function TaskManagerContainer() {
             Let's create the first task!
           </h2>
         )}
-        {tasks && (
-          <>
-            <Filters />
-            <TasksList items={tasks} />
-          </>
-        )}
+        {tasks && <TasksList items={tasks} />}
       </div>
     </>
   );

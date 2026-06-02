@@ -1,6 +1,7 @@
 import { useState } from "react";
-import type { Task } from "../assets/custom-hooks/useTasksJSON";
+import { type Task } from "../assets/custom-hooks/useTasksJSON";
 import type { Modal } from "../assets/custom-hooks/useModal";
+import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 
 function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   if (!isOpen) return null;
@@ -9,7 +10,9 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
 
-  function handleTaskCreation(e: React.MouseEvent<HTMLButtonElement>) {
+  const { reloadTasks } = useTaskEditor();
+
+  async function handleTaskCreation(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     let newTask: Task | null = null;
 
@@ -27,38 +30,40 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
         executed: false,
       };
 
-      addTask(newTask);
+      await addTask(newTask);
+
+      await reloadTasks();
 
       setTitle("");
       setDescription("");
       setPriority("");
+
+      onClose();
     }
-
-    async function addTask(task: Task) {
-      try {
-        const response = await fetch("http://localhost:3000/api/tasks", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(task),
-        });
-
-        if (response.status !== 200) {
-          throw new Error("Error in creating the new Task");
-        }
-
-        const addedTask = await response.json();
-        return addedTask;
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    onClose();
   }
 
-  function handleTaskEditing(e: React.MouseEvent<HTMLButtonElement>) {
+  async function addTask(task: Task) {
+    try {
+      const response = await fetch("http://localhost:3000/api/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
+      });
+
+      if (response.status !== 201) {
+        throw new Error("Error in creating the new Task");
+      }
+
+      const addedTask = await response.json();
+      return addedTask;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleTaskEditing(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     let editedTask: Task;
 
@@ -76,35 +81,37 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
         executed: false,
       };
 
-      editTask(editedTask);
+      await editTask(editedTask);
+
+      await reloadTasks();
 
       setTitle("");
       setDescription("");
       setPriority("");
+
+      onClose();
     }
+  }
 
-    async function editTask(task: Task) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/tasks/${whyIsOpen as number}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(task),
-        });
+  async function editTask(task: Task) {
+    try {
+      const response = await fetch(`http://localhost:3000/api/tasks/${whyIsOpen as number}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
+      });
 
-        if (response.status !== 200) {
-          throw new Error("Error in updating the Task");
-        }
-
-        const editedTask = await response.json();
-        return editedTask;
-      } catch (error) {
-        console.error(error);
+      if (response.status !== 200) {
+        throw new Error("Error in updating the Task");
       }
-    }
 
-    onClose();
+      const editedTask = await response.json();
+      return editedTask;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (

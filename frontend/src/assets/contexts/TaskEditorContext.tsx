@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { useTasksJSON, type Task } from "../custom-hooks/useTasksJSON";
 
 export type OrderCriterion = "" | "low" | "high" | "executed" | "pending";
@@ -9,7 +9,7 @@ interface TaskContext {
   tasks: Task[] | null;
   reloadTasks: () => Promise<void>;
   orderCriterion: OrderCriterion;
-  orderTasks: (criterion: OrderCriterion) => void;
+  toOrderCriterion: (criterion: OrderCriterion) => void;
 }
 
 const TaskEditorContext = createContext<TaskContext | undefined>(undefined);
@@ -30,10 +30,12 @@ export const TaskEditor: React.FC<TaskEditorProps> = ({ children }) => {
   const { loading, error, data, onReloadTasks } = useTasksJSON();
   const [orderCriterion, setOrderCriterion] = useState<OrderCriterion>("");
 
-  function toOrderTasks(criterion: OrderCriterion) {
-    if (!data) return [];
-
+  function toOrderCriterion(criterion: OrderCriterion) {
     setOrderCriterion(criterion);
+  }
+
+  const orderedTasks = useMemo(() => {
+    if (!data) return [];
 
     const tasksCopy = [...data];
 
@@ -124,13 +126,11 @@ export const TaskEditor: React.FC<TaskEditorProps> = ({ children }) => {
     }
 
     return tasksCopy;
-  }
-
-  const orderedTasks = toOrderTasks(orderCriterion);
+  }, [data, orderCriterion]);
 
   return (
     <TaskEditorContext.Provider
-      value={{ loading, error, tasks: orderedTasks, reloadTasks: onReloadTasks, orderCriterion, orderTasks: toOrderTasks }}
+      value={{ loading, error, tasks: orderedTasks, reloadTasks: onReloadTasks, orderCriterion, toOrderCriterion }}
     >
       {children}
     </TaskEditorContext.Provider>
