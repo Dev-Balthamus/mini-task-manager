@@ -1,16 +1,17 @@
 .appContainer {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1vh 1vw;
+  margin: 1vh 2vw;
 }
 
 .appTitle {
-  margin: 1vh 1vw 5vh;
+  margin: 0.5vh 1vw 2.5vh;
 }
 
 .appTitle {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: bold;
   color: #383b3e;
 }

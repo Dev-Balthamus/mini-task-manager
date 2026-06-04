@@ -3,6 +3,7 @@ import type { Task } from "../assets/custom-hooks/useTasksJSON";
 import { useModal } from "../assets/custom-hooks/useModal";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import TaskForm from "./TaskForm";
+import "./TaskItem.css";
 
 function TaskItem({ item }: { item: Task }) {
   const { isModalOpen, openModal, closeModal } = useModal();
@@ -68,7 +69,8 @@ function TaskItem({ item }: { item: Task }) {
         <p>{item.description}</p>
       </div>
       <h3
-        className={`taskItemPriority ${item.priority === "High" ? "high" : item.priority === "Medium" ? "medium" : "low"}`}
+        className="taskItemPriority"
+        id={`${item.priority === "high" ? "high" : item.priority === "medium" ? "medium" : "low"}`}
       >
         {item.priority}
       </h3>

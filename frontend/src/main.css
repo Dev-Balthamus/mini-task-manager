@@ -133,10 +133,34 @@ table {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+  font-size: 13px;
 }
 
 body {
   background-color: white;
   margin: 0;
-  font-size: 15px;
+}
+
+@media (min-width: 326.1px) and (max-width: 471px) {
+  :root {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 471.1px) and (max-width: 601px) {
+  :root {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 601.1px) and (max-width: 788px) {
+  :root {
+    font-size: 16.5px;
+  }
+}
+
+@media (min-width: 788.1px) {
+  :root {
+    font-size: 18px;
+  }
 }
