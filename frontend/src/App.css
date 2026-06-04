@@ -15,3 +15,50 @@
   font-weight: bold;
   color: #383b3e;
 }
+
+@media (min-width: 326.1px) and (max-width: 471px) {
+  .appContainer {
+    margin: 1vh 1.5vw;
+  }
+
+  .appTitle {
+    margin: 0.75vh 1vw 2.5vh;
+  }
+}
+
+@media (min-width: 471.1px) and (max-width: 601px) {
+  .appContainer {
+    margin: 1vh 1.375vw;
+  }
+
+  .appTitle {
+    margin: 0.875vh 1vw 3vh;
+  }
+}
+
+@media (min-width: 601.1px) and (max-width: 788px) {
+  .appContainer {
+    margin: 1vh 1.125vw;
+  }
+
+  .appTitle {
+    margin: 1vh 1vw 3vh;
+  }
+}
+
+@media (min-width: 788.1px) {
+  .appContainer {
+    margin: 1vh 1vw;
+  }
+
+  .appTitle {
+    margin: 1.125vh 1vw 3.25vh;
+  }
+}
+
+@media (min-width: 900.1px) {
+  .appContainer {
+    width: 870px;
+    justify-self: center;
+  }
+}

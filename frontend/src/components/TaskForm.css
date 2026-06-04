@@ -11,7 +11,7 @@
 .modalContainer {
   background-color: #ffffff;
   width: 50vw;
-  margin: 16.4vh auto;
+  margin: 15.6vh auto;
   padding: 3.75vw;
   border-radius: 0.375rem;
   box-shadow: 0 1rem 2.25rem rgba(99, 106, 110, 0.67);
@@ -55,4 +55,38 @@
   border: 0px solid #636a6e;
   border-radius: 0.375rem;
   cursor: pointer;
+}
+
+@media (min-width: 326.1px) and (max-width: 471px) {
+  .modalContainer {
+    margin: 17.2vh auto;
+    padding: 3.5vw;
+  }
+}
+
+@media (min-width: 471.1px) and (max-width: 601px) {
+  .modalContainer {
+    margin: 18.8vh auto;
+    padding: 3.25vw;
+  }
+}
+
+@media (min-width: 601.1px) and (max-width: 788px) {
+  .modalContainer {
+    margin: 20.4vh auto;
+    padding: 3vw;
+  }
+}
+
+@media (min-width: 788.1px) {
+  .modalContainer {
+    margin: 22vh auto;
+    padding: 2.75vw;
+  }
+}
+
+@media (min-width: 900.1px) {
+  .modalContainer {
+    width: 450px;
+  }
 }

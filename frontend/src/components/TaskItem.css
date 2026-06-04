@@ -85,3 +85,88 @@
   color: white;
   text-align: center;
 }
+
+@media (min-width: 326.1px) and (max-width: 471px) {
+  .taskItemTitle {
+    width: 42.5%;
+  }
+
+  .taskItemPriority {
+    width: 17.5%;
+  }
+
+  .taskItemStatus {
+    width: 20%;
+  }
+  .taskItemActions {
+    width: 20%;
+  }
+}
+
+@media (min-width: 471.1px) and (max-width: 601px) {
+  .taskItemTitle {
+    width: 50%;
+  }
+
+  .taskItemPriority {
+    width: 15%;
+  }
+
+  .taskItemStatus {
+    width: 17.5%;
+  }
+  .taskItemActions {
+    width: 17.5%;
+  }
+}
+
+@media (min-width: 601.1px) and (max-width: 788px) {
+  .taskItemTitle {
+    width: 57.5%;
+  }
+
+  .taskItemPriority {
+    width: 12.5%;
+  }
+
+  .taskItemStatus {
+    width: 15%;
+  }
+  .taskItemActions {
+    width: 15%;
+  }
+}
+
+@media (min-width: 788.1px) {
+  .taskItemTitle {
+    width: 65%;
+  }
+
+  .taskItemPriority {
+    width: 10%;
+  }
+
+  .taskItemStatus {
+    width: 12.5%;
+  }
+  .taskItemActions {
+    width: 12.5%;
+  }
+}
+
+@media (min-width: 900.1px) {
+  .taskItemTitle {
+    width: 70%;
+  }
+
+  .taskItemPriority {
+    width: 9%;
+  }
+
+  .taskItemStatus {
+    width: 10.75%;
+  }
+  .taskItemActions {
+    width: 10.25%;
+  }
+}

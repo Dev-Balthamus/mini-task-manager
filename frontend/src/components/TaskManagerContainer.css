@@ -3,13 +3,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1vh 0;
+  padding: 1vh 0;
   color: #636a6e;
 }
 
 .newTaskContainer {
   width: 100%;
-  margin: 1vh 1vw;
+  padding: 1vh 0;
   display: flex;
   justify-content: flex-end;
 }
@@ -29,7 +29,7 @@
 
 .tasksContainer {
   width: 100%;
-  margin: 1vh 0;
+  padding: 1vh 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,4 +38,60 @@
 
 .tasksContainer > * {
   width: 100%;
+}
+
+@media (min-width: 326.1px) and (max-width: 471px) {
+  .taskManagerContainer {
+    padding: 1.25vh 0;
+  }
+
+  .newTaskContainer {
+    padding: 1.25vh 0;
+  }
+
+  .tasksContainer {
+    padding: 1.25vh 0;
+  }
+}
+
+@media (min-width: 471.1px) and (max-width: 601px) {
+  .taskManagerContainer {
+    padding: 1.5vh 0;
+  }
+
+  .newTaskContainer {
+    padding: 1.5vh 0;
+  }
+
+  .tasksContainer {
+    padding: 1.5vh 0;
+  }
+}
+
+@media (min-width: 601.1px) and (max-width: 788px) {
+  .taskManagerContainer {
+    padding: 1.75vh 0;
+  }
+
+  .newTaskContainer {
+    padding: 1.75vh 2vw;
+  }
+
+  .tasksContainer {
+    padding: 1.75vh 0;
+  }
+}
+
+@media (min-width: 788.1px) {
+  .taskManagerContainer {
+    padding: 2vh 0;
+  }
+
+  .newTaskContainer {
+    padding: 2vh 2vw;
+  }
+
+  .tasksContainer {
+    padding: 2vh 0;
+  }
 }
