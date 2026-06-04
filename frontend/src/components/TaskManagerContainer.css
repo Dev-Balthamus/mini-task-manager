@@ -1,0 +1,39 @@
+.taskManagerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1vh 1vw;
+  color: #636a6e;
+}
+
+.newTaskContainer {
+  width: 100%;
+  margin: 1vh 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.taskItemCreate {
+  height: 1.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: white;
+  background-color: #636a6e;
+  border: 0px solid #636a6e;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.tasksContainer {
+  width: 100%;
+  margin: 1vh 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tasksContainer > * {
+  width: 100%;
+}

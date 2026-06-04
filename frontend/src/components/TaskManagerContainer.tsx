@@ -3,13 +3,14 @@ import TaskForm from "./TaskForm";
 import Filters from "./Filters";
 import TasksList from "./TasksList";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
+import "./TaskManagerContainer.css";
 
 function TaskManagerContainer() {
   const { isModalOpen, openModal, closeModal } = useModal();
   const { loading, error, tasks } = useTaskEditor();
 
   return (
-    <>
+    <div className="taskManagerContainer">
       <div className="newTaskContainer">
         <button onClick={openModal} className="taskItemCreate">
           New Task
@@ -30,7 +31,7 @@ function TaskManagerContainer() {
         )}
         {tasks && <TasksList items={tasks} />}
       </div>
-    </>
+    </div>
   );
 }
 

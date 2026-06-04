@@ -1,0 +1,26 @@
+.filtersContainer {
+  margin: 1vh 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.filtersTitle {
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-right: 1vw;
+}
+
+.filter {
+  height: 1.125rem;
+  margin-right: 1vw;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #636a6e;
+}
+
+.filter option {
+  font-size: 0.75rem;
+  color: #71797e;
+}

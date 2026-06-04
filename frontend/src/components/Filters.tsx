@@ -1,4 +1,5 @@
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
+import "./Filters.css";
 
 function Filters() {
   const { orderCriterion, toOrderCriterion } = useTaskEditor();
@@ -11,7 +12,7 @@ function Filters() {
   return (
     <div className="filtersContainer">
       <h5 className="filtersTitle">Filters</h5>
-      <select className="priorityFilter" value={orderCriterion} onChange={handleFilterChange}>
+      <select className="filter" value={orderCriterion} onChange={handleFilterChange}>
         <option value="" disabled>
           Order by Priority...
         </option>
@@ -22,7 +23,7 @@ function Filters() {
           from High to Low
         </option>
       </select>
-      <select className="executedFilter" value={orderCriterion} onChange={handleFilterChange}>
+      <select className="filter" value={orderCriterion} onChange={handleFilterChange}>
         <option value="" disabled>
           Filter by Execution Status...
         </option>

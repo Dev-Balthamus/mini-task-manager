@@ -67,9 +67,11 @@ function TaskItem({ item }: { item: Task }) {
         <h3>{item.title}</h3>
         <p>{item.description}</p>
       </div>
-      <div className="taskItemPriority">
-        <h3>{item.priority}</h3>
-      </div>
+      <h3
+        className={`taskItemPriority ${item.priority === "High" ? "high" : item.priority === "Medium" ? "medium" : "low"}`}
+      >
+        {item.priority}
+      </h3>
       <div className="taskItemStatus">
         <h3>Executed</h3>
         <input
@@ -81,13 +83,9 @@ function TaskItem({ item }: { item: Task }) {
         />
       </div>
       <div className="taskItemActions">
-        <button className="taskItemModify" onClick={openModal}>
-          Modify
-        </button>
+        <button onClick={openModal}>Modify</button>
         <TaskForm isOpen={isModalOpen} whyIsOpen={item.id} onClose={closeModal} />
-        <button className="taskItemDelete" onClick={handleTaskDeletion}>
-          Delete
-        </button>
+        <button onClick={handleTaskDeletion}>Delete</button>
       </div>
     </li>
   );

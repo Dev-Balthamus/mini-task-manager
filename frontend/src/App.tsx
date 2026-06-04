@@ -1,6 +1,6 @@
-import "./App.css";
 import { TaskEditor } from "./assets/contexts/TaskEditorContext";
 import TaskManagerContainer from "./components/TaskManagerContainer";
+import "./App.css";
 
 function App() {
   return (

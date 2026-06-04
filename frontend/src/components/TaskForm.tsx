@@ -2,6 +2,7 @@ import { useState } from "react";
 import { type Task } from "../assets/custom-hooks/useTasksJSON";
 import type { Modal } from "../assets/custom-hooks/useModal";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
+import "./TaskForm.css";
 
 function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   if (!isOpen) return null;
@@ -115,15 +116,19 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modalOverlay" onClick={onClose}>
       {/* "modal-overlay" è lo sfondo oltre la modale. Se ci si clicca, la modale si chiude.
           "modal-container" è il contenitore della modale.
           "e.stopPropagation()" evita la chiusura della modale se si clicca in essa. */}
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        {whyIsOpen === "createTask" && <h2>Create New Task</h2>}
-        {whyIsOpen === "editTask" && <h2>Edit Selected Task</h2>}
-        <button onClick={onClose}>&times;</button>
+      <div className="modalContainer" onClick={(e) => e.stopPropagation()}>
         <form className="formContainer">
+          <div className="formHeader">
+            {whyIsOpen === "createTask" && <h2>Create New Task</h2>}
+            {whyIsOpen !== "createTask" && <h2>Edit Selected Task</h2>}
+            <button onClick={onClose} className="closeButton">
+              &times;
+            </button>
+          </div>
           <input
             type="text"
             placeholder="Title"
@@ -149,7 +154,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
               Create Task
             </button>
           )}
-          {(whyIsOpen as number) && (
+          {whyIsOpen !== "createTask" && (
             <button type="submit" className="formSubmit" onClick={handleTaskEditing}>
               Edit Task
             </button>
