@@ -47,19 +47,24 @@ function TaskItem({ item }: { item: Task }) {
 
   async function handleTaskDeletion(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    try {
-      const response = await fetch(`http://localhost:3000/api/tasks/${item.id}`, {
-        method: "DELETE",
-      });
 
-      if (response.status !== 200) {
-        throw new Error("Error in deleting the Task");
+    const proceed = confirm("Sei sicuro di voler cancellare questo task? L'azione è irreversibile.");
+
+    if (proceed) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/tasks/${item.id}`, {
+          method: "DELETE",
+        });
+
+        if (response.status !== 200) {
+          throw new Error("Error in deleting the Task");
+        }
+
+        await reloadTasks();
+      } catch (error) {
+        console.error(error);
       }
-
-      await reloadTasks();
-    } catch (error) {
-      console.error(error);
-    }
+    } else return;
   }
 
   return (
