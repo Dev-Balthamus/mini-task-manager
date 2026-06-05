@@ -11,7 +11,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
 
-  const { reloadTasks } = useTaskEditor();
+  const { tasks, reloadTasks } = useTaskEditor();
 
   async function handleTaskCreation(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -64,34 +64,28 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
     }
   }
 
+  const taskToEdit = tasks?.find((t: Task) => t.id === whyIsOpen);
+  const previousTitle = taskToEdit?.title;
+
   async function handleTaskEditing(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    let editedTask: Task;
+    let editedTask: Task = {
+      id: whyIsOpen as number,
+      title,
+      description,
+      priority,
+      executed: false,
+    };
 
-    if (!title || !priority) {
-      alert("Title and Priority fields are required.");
-      return;
-    }
+    await editTask(editedTask);
 
-    if (title && priority) {
-      editedTask = {
-        id: whyIsOpen as number,
-        title,
-        description,
-        priority,
-        executed: false,
-      };
+    await reloadTasks();
 
-      await editTask(editedTask);
+    setTitle("");
+    setDescription("");
+    setPriority("");
 
-      await reloadTasks();
-
-      setTitle("");
-      setDescription("");
-      setPriority("");
-
-      onClose();
-    }
+    onClose();
   }
 
   async function editTask(task: Task) {
@@ -131,7 +125,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
           </div>
           <input
             type="text"
-            placeholder="Title"
+            placeholder={whyIsOpen === "createTask" ? "Title" : `${previousTitle}`}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="formTextInput"

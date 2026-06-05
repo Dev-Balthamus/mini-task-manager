@@ -68,14 +68,12 @@ function TaskItem({ item }: { item: Task }) {
         <h3>{item.title}</h3>
         <p>{item.description}</p>
       </div>
-      <h3
-        className="taskItemPriority"
-        id={`${item.priority === "high" ? "high" : item.priority === "medium" ? "medium" : "low"}`}
-      >
-        {item.priority}
-      </h3>
+      <div className="taskItemPriority">
+        <h3>Priority</h3>
+        <h3 id={`${item.priority === "high" ? "high" : item.priority === "medium" ? "medium" : "low"}`}>{item.priority}</h3>
+      </div>
       <div className="taskItemStatus">
-        <h3>Executed</h3>
+        <h3>Done?</h3>
         <input
           type="checkbox"
           className="taskItemStatusCheckbox"

@@ -113,7 +113,7 @@ app.put("/api/tasks/:id", (req, res) => {
     //Il task trovato viene aggiornato con i nuovi dati inviati da React
     const { title, description, priority, executed } = req.body;
     task.title = title || task.title;
-    task.description = description || task.description;
+    task.description = description;
     task.priority = priority || task.priority;
     task.executed = executed !== undefined ? executed : task.executed;
 
