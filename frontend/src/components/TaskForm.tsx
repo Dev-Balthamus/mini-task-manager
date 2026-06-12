@@ -5,17 +5,17 @@ import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import "./TaskForm.css";
 
 function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
-  if (!isOpen) return null;
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
 
   const { tasks, reloadTasks } = useTaskEditor();
 
+  if (!isOpen) return null;
+
   async function handleTaskCreation(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    let newTask: Task | null = null;
+    let newTask: Task;
 
     if (!title || !priority) {
       alert("Title and Priority fields are required.");
@@ -64,17 +64,17 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
     }
   }
 
-  const taskToEdit = tasks?.find((t: Task) => t.id === whyIsOpen);
-  const previousTitle = taskToEdit?.title;
+  const taskToEdit = tasks!.find((t: Task) => t.id === whyIsOpen)!;
+  const previousTitle = taskToEdit.title;
 
   async function handleTaskEditing(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    let editedTask: Task = {
-      id: whyIsOpen as number,
+    const editedTask = {
+      ...taskToEdit,
       title,
       description,
       priority,
-      executed: false,
+      executed: false, //Si assume che ogni edit a un task sia dovuto alla necessità di altre specifiche o altro tempo per completarne l'esecuzione
     };
 
     await editTask(editedTask);
@@ -123,20 +123,26 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
               &times;
             </button>
           </div>
-          <input
-            type="text"
-            placeholder={whyIsOpen === "createTask" ? "Title" : `${previousTitle}`}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="formTextInput"
-          />
-          <input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="formTextInput"
-          />
+          <div className="formField">
+            <label className="formLabel">Title</label>
+            <input
+              type="text"
+              placeholder={whyIsOpen === "createTask" ? "Title" : `${previousTitle}`}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="formTextInput"
+            />
+          </div>
+          <div className="formField">
+            <label className="formLabel">Description</label>
+            <input
+              type="text"
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="formTextInput"
+            />
+          </div>
           <select value={priority} onChange={(e) => setPriority(e.target.value)} className="formSelectInput">
             <option value="">Select Priority</option>
             <option value="low">Low</option>
