@@ -1,5 +1,6 @@
 import express from "express";
 import fs from "fs";
+import { readFile } from "node:fs/promises";
 import path from "path";
 import { fileURLToPath } from "url"; // Per ottenere __dirname in ES Modules
 import cors from "cors"; // Per far comunicare frontend e backend se sono su porte diverse
@@ -28,7 +29,7 @@ app.use(cors()); // Per far parlare React con Express
 app.use(express.json()); // Per permettere a Express di leggere il JSON inviato nel body da React
 
 // ENDPOINT CREATE
-app.post("/api/tasks", (req, res) => {
+app.post("/api/tasks", async (req, res) => {
   const { id, title, description, priority, executed } = req.body; // Questo è l'oggetto inviato da React
   const newTask = { id, title, description, priority, executed };
   const validatedNewTask = taskSchema.validate(newTask);
@@ -37,12 +38,9 @@ app.post("/api/tasks", (req, res) => {
     return res.status(400).json({ msg: validatedNewTask.error.details[0].message });
   }
 
-  // Qui viene letto il file JSON esistente
-  fs.readFile(tasksJSONPath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Errore nella lettura del file:", err);
-      return res.status(500).json({ msg: "Errore interno del server" });
-    }
+  try {
+    // Qui viene letto il file JSON esistente
+    const data = await fs.promises.readFile(tasksJSONPath, "utf8");
 
     // Il contenuto del JSON viene trasformato in un array dei tasks
     let tasks = [];
@@ -55,34 +53,32 @@ app.post("/api/tasks", (req, res) => {
 
     // L'array aggiornato viene sovrascritto nel file JSON
     // I parametri "null" e "2" vanno a formattare il JSON per favorirne la leggibilità
-    fs.writeFile(tasksJSONPath, JSON.stringify(tasks, null, 2), (err) => {
-      if (err) {
-        console.error("Errore nella scrittura del file:", err);
-        return res.status(500).json({ msg: "Impossibile salvare il task" });
-      }
+    await fs.promises.writeFile(tasksJSONPath, JSON.stringify(tasks, null, 2));
 
-      res.status(201).json({ msg: "Il task è stato creato!", task: newTask });
-    });
-  });
+    return res.status(201).json({ msg: "Il task è stato creato!", task: newTask });
+  } catch (err) {
+    console.error("Errore nella lettura del file:", err);
+    return res.status(500).json({ msg: "Errore interno del server" });
+  }
 });
 
 // Endpoint GET-ALL
-app.get("/api/tasks", (req, res) => {
-  fs.readFile(tasksJSONPath, "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ msg: "Errore nella lettura dei task" });
-    }
+app.get("/api/tasks", async (req, res) => {
+  try {
+    // Qui viene letto il file JSON esistente
+    const data = await fs.promises.readFile(tasksJSONPath, "utf8");
+
     res.status(200).json(JSON.parse(data || "[]"));
-  });
+  } catch (err) {
+    return res.status(500).json({ msg: "Errore nella lettura dei task" });
+  }
 });
 
 //ENDPOINT GET-ONE-BY-ID
-app.get("/api/tasks/:id", (req, res) => {
-  // Qui viene letto il file JSON esistente
-  fs.readFile(tasksJSONPath, "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ msg: "Errore nella lettura dei task" });
-    }
+app.get("/api/tasks/:id", async (req, res) => {
+  try {
+    // Qui viene letto il file JSON esistente
+    const data = await fs.promises.readFile(tasksJSONPath, "utf8");
 
     // Il contenuto del JSON viene trasformato in un array dei tasks per trovare quello con l'ID dato
     const tasks = JSON.parse(data || "[]");
@@ -92,16 +88,16 @@ app.get("/api/tasks/:id", (req, res) => {
       return res.status(404).json({ msg: "Task non trovato" });
     }
     res.status(200).json({ msg: "Task trovato!", task: task });
-  });
+  } catch (err) {
+    return res.status(500).json({ msg: "Errore nella lettura dei task" });
+  }
 });
 
 //ENDPOINT MODIFY-ONE-BY-ID
-app.put("/api/tasks/:id", (req, res) => {
-  // Qui viene letto il file JSON esistente
-  fs.readFile(tasksJSONPath, "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ msg: "Errore nella lettura dei task" });
-    }
+app.put("/api/tasks/:id", async (req, res) => {
+  try {
+    // Qui viene letto il file JSON esistente
+    const data = await fs.promises.readFile(tasksJSONPath, "utf8");
 
     // Il contenuto del JSON viene trasformato in un array dei tasks per trovare quello con l'ID dato
     const tasks = JSON.parse(data || "[]");
@@ -118,23 +114,20 @@ app.put("/api/tasks/:id", (req, res) => {
     task.executed = executed !== undefined ? executed : task.executed;
 
     // L'array aggiornato viene sovrascritto nel file JSON
-    fs.writeFile(tasksJSONPath, JSON.stringify(tasks, null, 2), (err) => {
-      if (err) {
-        console.error("Errore nella scrittura del file:", err);
-        return res.status(500).json({ msg: "Impossibile aggiornare il task" });
-      }
+    await fs.promises.writeFile(tasksJSONPath, JSON.stringify(tasks, null, 2));
 
-      res.status(200).json({ msg: "Task aggiornato!", task: task });
-    });
-  });
+    return res.status(200).json({ msg: "Task aggiornato!", task: task });
+  } catch (err) {
+    console.error("Errore durante l'aggiornamento del task:", err);
+    return res.status(500).json({ msg: "Errore interno del server" });
+  }
 });
 
 //ENDPOINT DELETE-ONE-BY-ID
-app.delete("/api/tasks/:id", (req, res) => {
-  fs.readFile(tasksJSONPath, "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ msg: "Errore nella lettura dei task" });
-    }
+app.delete("/api/tasks/:id", async (req, res) => {
+  try {
+    // Qui viene letto il file JSON esistente
+    const data = await fs.promises.readFile(tasksJSONPath, "utf8");
 
     // Il contenuto del JSON viene trasformato in un array dei tasks per trovare quello con l'ID dato
     const tasks = JSON.parse(data || "[]");
@@ -147,14 +140,13 @@ app.delete("/api/tasks/:id", (req, res) => {
     const updatedTasks = tasks.filter((t) => t.id !== Number(req.params.id));
 
     // L'array aggiornato viene sovrascritto nel file JSON
-    fs.writeFile(tasksJSONPath, JSON.stringify(updatedTasks, null, 2), (err) => {
-      if (err) {
-        console.error("Errore nella scrittura del file:", err);
-        return res.status(500).json({ msg: "Impossibile eliminare il task" });
-      }
-      res.status(200).json({ msg: "Task eliminato!", task: task });
-    });
-  });
+    await fs.promises.writeFile(tasksJSONPath, JSON.stringify(updatedTasks, null, 2));
+
+    return res.status(200).json({ msg: "Task eliminato!", task: task });
+  } catch (err) {
+    console.error("Errore durante la cancellazione del task:", err);
+    return res.status(500).json({ msg: "Errore interno del server" });
+  }
 });
 
 app.listen(port, () => {

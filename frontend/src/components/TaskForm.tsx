@@ -65,7 +65,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   }
 
   const taskToEdit = tasks!.find((t: Task) => t.id === whyIsOpen)!;
-  const previousTitle = taskToEdit.title;
+  const previousTitle = taskToEdit?.title;
 
   async function handleTaskEditing(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
