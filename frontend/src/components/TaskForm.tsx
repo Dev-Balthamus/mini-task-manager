@@ -25,7 +25,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
 
     if (title && priority) {
       newTask = {
-        id: Date.now(),
+        id: NaN,
         title,
         description,
         priority,

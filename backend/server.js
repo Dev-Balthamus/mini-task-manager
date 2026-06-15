@@ -30,8 +30,8 @@ app.use(express.json()); // Per permettere a Express di leggere il JSON inviato 
 
 // ENDPOINT CREATE
 app.post("/api/tasks", async (req, res) => {
-  const { id, title, description, priority, executed } = req.body; // Questo è l'oggetto inviato da React
-  const newTask = { id, title, description, priority, executed };
+  const { title, description, priority, executed } = req.body; // Questo è l'oggetto inviato da React
+  const newTask = { id: Date.now(), title, description, priority, executed };
   const validatedNewTask = taskSchema.validate(newTask);
 
   if (validatedNewTask.error) {
