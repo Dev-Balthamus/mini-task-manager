@@ -4,6 +4,7 @@ import { useModal } from "../assets/custom-hooks/useModal";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import TaskForm from "./TaskForm";
 import "./TaskItem.css";
+import { editTask, deleteTask } from "../assets/apis";
 
 function TaskItem({ item }: { item: Task }) {
   const { isModalOpen, openModal, closeModal } = useModal();
@@ -24,46 +25,15 @@ function TaskItem({ item }: { item: Task }) {
     await reloadTasks();
   }
 
-  async function editTask(task: Task) {
-    try {
-      const response = await fetch(`http://localhost:3000/api/tasks/${item.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-
-      if (response.status !== 200) {
-        throw new Error("Error in updating the Task");
-      }
-
-      const editedTask = await response.json();
-      return editedTask;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   async function handleTaskDeletion(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
     const proceed = confirm("Sei sicuro di voler cancellare questo task? L'azione è irreversibile.");
 
     if (proceed) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/tasks/${item.id}`, {
-          method: "DELETE",
-        });
+      await deleteTask(item);
 
-        if (response.status !== 200) {
-          throw new Error("Error in deleting the Task");
-        }
-
-        await reloadTasks();
-      } catch (error) {
-        console.error(error);
-      }
+      await reloadTasks();
     } else return;
   }
 

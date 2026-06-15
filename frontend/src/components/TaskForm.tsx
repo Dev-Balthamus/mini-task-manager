@@ -3,6 +3,7 @@ import { type Task } from "../assets/custom-hooks/useTasksJSON";
 import type { Modal } from "../assets/custom-hooks/useModal";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import "./TaskForm.css";
+import { addTask, editTask } from "../assets/apis";
 
 function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   const [title, setTitle] = useState("");
@@ -43,27 +44,6 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
     }
   }
 
-  async function addTask(task: Task) {
-    try {
-      const response = await fetch("http://localhost:3000/api/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-
-      if (response.status !== 201) {
-        throw new Error("Error in creating the new Task");
-      }
-
-      const addedTask = await response.json();
-      return addedTask;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   const taskToEdit = tasks!.find((t: Task) => t.id === whyIsOpen)!;
   const previousTitle = taskToEdit?.title;
 
@@ -86,27 +66,6 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
     setPriority("");
 
     onClose();
-  }
-
-  async function editTask(task: Task) {
-    try {
-      const response = await fetch(`http://localhost:3000/api/tasks/${whyIsOpen as number}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-
-      if (response.status !== 200) {
-        throw new Error("Error in updating the Task");
-      }
-
-      const editedTask = await response.json();
-      return editedTask;
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   return (

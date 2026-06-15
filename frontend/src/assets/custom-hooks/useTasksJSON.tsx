@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+export const baseURL = import.meta.env.VITE_API_URL;
+
 export interface Task {
   id: number;
   title: string;
@@ -18,7 +20,7 @@ export function useTasksJSON() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3000/api/tasks");
+      const response = await fetch(baseURL);
       const tasks = await response.json();
 
       if (response.status !== 200) {
