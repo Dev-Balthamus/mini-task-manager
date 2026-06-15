@@ -1,4 +1,4 @@
-# Mini Task Manager
+# Mini Task Manager v. 1.1.0
 
 **Mini Task Manager** è un progetto di app per la gestione di compiti e/o attività da svolgere.
 Allo stadio di sviluppo corrente, l'app permette ad un utente unico di annotare i propri task, salvarli in una lista ri-ordinabile, tracciarne lo stato di esecuzione, cancellarli dalla lista qualora si voglia liberare spazio.
@@ -26,12 +26,12 @@ Pertanto, tanto che si lavori in un IDE tanto che no, si richiede di aprire due 
   Una volta che sia il Frontend sia il Backend saranno avviati, sarà possibile utilizzare l'applicazione da un qualsiasi browser che punti a _http://localhost:5173/_.
   (N.B.: "5173" è la porta che Vite imposta di default per far girare le applicazioni React: durante lo sviluppo si è deciso di lasciare quella. Cambiare la porta è possibile, andando a modificare il file "vite.config".)
 
-## ~ Breve nota sul percorso dello sviluppo ~
+## ~ Breve nota sul percorso dello sviluppo - v. 1.0.0 ~
 
 Essendo il primo progetto con questo stack tecnologico di cui mi sono occupato dopo tanti mesi che mi stavo dedicando a tutt'altro, l'intero percorso fin qui è stato rallentato e complicato dal fatto che ogni singolo avanzamento nello sviluppo è stato preceduto da un tempo per ravvivare le conoscenze e competenze acquisite.
 Il passaggio più difficile da affrontare è stato quello della corretta strutturazione del Context con cui i dati dei task possono essere acceduti e manipolati globalmente per tutti i componenti dell'applicativo. Un gradino subito sotto, ho avuto le maggiori difficoltà nella gestione della logica dietro il form, che quando serve alla creazione del task deve funzionare in un dato modo e quando invece serve alla modifica del task deve funzionare in un modo differente. Tant'è vero che ho preso la decisione di non affrontare lo spostamento della maggior parte della logica del form sul Context, e dunque di non far sì che il componente TaskForm fosse soltanto presentazionale: una scelta che, una volta acquisite maggiori padronanza e scioltezza nello sviluppo con questo stack, non ripeterei.
 
-## ~ Domande aperte, e loro risposte ~
+## ~ Domande aperte, e loro risposte v. 1.0.0 ~
 
 1. Quando si crea un task, il Frontend deve aspettare la risposta del Backend prima di mostrarlo? Pro e contro.
    La risposta è sì. La ragione è evitare che possa crearsi in interfaccia un task non salvato correttamente in database, rischiando un disallineamento tra Frontend e Backend, ed evitando di impiegare il "localStorage" complicando la struttura dei flussi di dati. Questi sono i pro di una scelta del genere. I contro che si potrebbero avere starebbero nell'ambito dell'esperienza utente, da un lato in fatto di velocità di aggiornamento dei dati in interfaccia, da un altro lato in fatto di difficoltà/impossibilità di lavoro qualora si riscontrassero problematiche di connessione al server su cui i dati vengono allocati e manipolati.
@@ -43,3 +43,12 @@ Il passaggio più difficile da affrontare è stato quello della corretta struttu
    Dunque, in fatto di struttura presentazionale dei form di creazione e modifica di task, non c'è stata duplicazione di codice in quanto in questo progetto entrambe le varianti del form sono gestite in un unico componente React le cui parti cambiano grazie a tecniche di rendering condizionale a seconda di quale pulsante in quale punto dell'applicativo richiama il form. In fatto di logica dietro ai form, se è vero che i due flussi di gestione e manipolazione dei dati dei task sono decisamente simili tra creazione e modifica di un task, l'unico modo per evitare anche solo la possibilità di scrivere codice duplicato sarebbe ricorrere alle strutture condizionali, dimezzando il numero di funzioni necessarie a gestire le due differenti logiche.
 5. Cosa viene messo in un "useEffect" e cosa no?
    Considerato che si può impiegare un "useEffect" nei casi di fetch di dati, definizione di listener globali, gestione di timer e intervalli e poco altro ancora, in questo progetto se ne è limitato l'uso alla chiamata dell'API di tipo _get-all_ per il recupero dei dati dell'intero JSON di task.
+
+## ~ Altre domande aperte, e loro risposte - v.1.1.0 ~
+
+6. Se due menù devono mostrare scelte diverse e indipendenti, possono condividere lo stesso stato?
+   La risposta, in effetti, è no: associare due menù alla stessa variabile di stato in linea di massima non garantisce il funzionamento indipendente dell'uno rispetto all'altro. Ragione per cui, con questa prima fase di aggiornamento e fixing, tra le prime modifiche su cui ho lavorato c'è stata proprio la creazione di due stati distinti per i due diversi filtri della lista dei task.
+7. Dove conviene generare l'ID di un task, sul client o sul server? Fatto col `Date.now()` sul client, cosa succede se due task nascono nello stesso millisecondo?
+   Allora, in effetti se si stabilisce che l'ID dei task sia generato sul client, si può verificare che due task vengano generati nello stesso millisecondo, e quindi con un ID identico tra loro. Ragione per cui conviene che l'ID di un task sia generato sul server, ed è stata lavorata una modifica di questo genere.
+8. Come si dovrebbe testare l'endpoint di creazione senza aprire il browser?
+   Per testare gli endpoint di un'app, e quindi nel nostro caso quello di creazione di un task, senza aprire un browser, si dovrebbe ricorrere a specifici software per il testing di API, qual'è anche Postman. Va però considerato il fatto che, nel caso nella struttura dell'app sia definito che l'ID come timestamp venga generato lato client, per il testing dell'endpoint di creazione si dovrebbe fornire un mock ID precedentemente generato fuori dal flusso di lavoro dell'app: cosa che porta un ulteriore punto a favore dello spostamento della generazione del timestamp per ID lato server.
