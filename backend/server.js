@@ -113,6 +113,8 @@ app.put("/api/tasks/:id", async (req, res) => {
     task.priority = priority || task.priority;
     task.executed = executed !== undefined ? executed : task.executed;
 
+    const editedTask = taskSchema.validate(task);
+
     // L'array aggiornato viene sovrascritto nel file JSON
     await fs.promises.writeFile(tasksJSONPath, JSON.stringify(tasks, null, 2));
 
