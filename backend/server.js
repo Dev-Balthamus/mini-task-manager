@@ -115,6 +115,10 @@ app.put("/api/tasks/:id", async (req, res) => {
 
     const editedTask = taskSchema.validate(task);
 
+    if (editedTask.error) {
+      return res.status(400).json({ msg: validatedNewTask.error.details[0].message });
+    }
+
     // L'array aggiornato viene sovrascritto nel file JSON
     await fs.promises.writeFile(tasksJSONPath, JSON.stringify(tasks, null, 2));
 
