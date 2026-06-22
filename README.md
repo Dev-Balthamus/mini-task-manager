@@ -15,9 +15,20 @@ Allo stadio di sviluppo corrente, l'app permette ad un utente unico di annotare 
 - **Frontend**: TypeScript, React, Vite, HTML, CSS;
 - **Backend**: Node, Express.
 
-## Come avviare il progetto
+## Come configurare e avviare il progetto
 
-Il progetto dell'app **Mini Task Manager** consta di un repository unico, al cui primo livello di articolazione si distinguono una cartella che contiene tutto il Frontend e una che contiene tutto il Backend.
+Il progetto dell'app **Mini Task Manager** consta di un repository unico, al cui primo livello di articolazione si distinguono una cartella che contiene tutto il Frontend e una che contiene tutto il Backend.<br>
+Tutte le volte che il progetto sia clonato ex novo su macchina locale, vi sono delle azioni preliminari che vanno compiute.
+La prima riguarda sia il Frontend sia il Backend, ed è: l'installazione delle dipendenze del progetto. Essendo diverse tra le due parti del progetto, il comando da terminale specifico per questo scopo, ossia **npm install**, va eseguito due volte:
+
+- una quando il terminale punta a _"./mini-task-manager/frontend/"_, per installare le dipendenze del Frontend
+- una quando il terminale punta a _"./mini-task-manager/backend/"_, per installare le dipendenze del Backend
+
+La seconda riguarda solo il Frontend, perché in esso l'URL principale delle API del progetto è codificato come variabile d'ambiente. Pertanto, una volta clonato ex novo il progetto, si deve:
+
+- nella directory _"./mini-task-manager/frontend/"_, duplicare il file **.env.example** e rinominare la copia in _.env_;
+- aprire il nuovo file **.env** per rimuovere il commento e aggiornare i placeholders nel valore della variabile d'ambiente con quelli effettivi configurati sulla macchina in uso e la copia del progetto in esecuzione.
+
 Chiaramente Frontend e Backend vanno avviati e tenuti attivi sempre insieme affinché il progetto funzioni.
 Pertanto, tanto che si lavori in un IDE tanto che no, si richiede di aprire due terminali:
 
