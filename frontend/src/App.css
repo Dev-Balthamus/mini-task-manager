@@ -7,10 +7,7 @@
 }
 
 .appTitle {
-  margin: 0.5vh 1vw 2.5vh;
-}
-
-.appTitle {
+  margin: 3.25vh 1vw 2.5vh;
   font-size: 2rem;
   font-weight: bold;
   color: #383b3e;
@@ -20,10 +17,6 @@
   .appContainer {
     margin: 1vh 1.5vw;
   }
-
-  .appTitle {
-    margin: 0.75vh 1vw 2.5vh;
-  }
 }
 
 @media (min-width: 471.1px) and (max-width: 601px) {
@@ -32,7 +25,7 @@
   }
 
   .appTitle {
-    margin: 0.875vh 1vw 3vh;
+    margin: 4vh 1vw 3vh;
   }
 }
 
@@ -42,7 +35,7 @@
   }
 
   .appTitle {
-    margin: 1vh 1vw 3vh;
+    margin: 4vh 1vw 3vh;
   }
 }
 
@@ -52,7 +45,7 @@
   }
 
   .appTitle {
-    margin: 1.125vh 1vw 3.25vh;
+    margin: 4.25vh 1vw 3.25vh;
   }
 }
 

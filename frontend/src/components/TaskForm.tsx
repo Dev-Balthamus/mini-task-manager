@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { type Task } from "../assets/custom-hooks/useTasksJSON";
-import type { Modal } from "../assets/custom-hooks/useModal";
+import type { ManageModal } from "../assets/custom-hooks/useModal";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
-import "./TaskForm.css";
 import { addTask, editTask } from "../assets/apis";
+import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
+import "./TaskForm.css";
 
-function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
+function TaskForm({ isOpen, whyIsOpen, onClose }: ManageModal) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
 
   const { tasks, reloadTasks } = useTaskEditor();
-
-  if (!isOpen) return null;
 
   async function handleTaskCreation(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -69,58 +68,51 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: Modal) {
   }
 
   return (
-    <div className="modalOverlay" onClick={onClose}>
-      {/* "modal-overlay" è lo sfondo oltre la modale. Se ci si clicca, la modale si chiude.
-          "modal-container" è il contenitore della modale.
-          "e.stopPropagation()" evita la chiusura della modale se si clicca in essa. */}
-      <div className="modalContainer" onClick={(e) => e.stopPropagation()}>
-        <form className="formContainer">
-          <div className="formHeader">
-            {whyIsOpen === "createTask" && <h2>Create New Task</h2>}
-            {whyIsOpen !== "createTask" && <h2>Edit Selected Task</h2>}
-            <button onClick={onClose} className="closeButton">
-              &times;
-            </button>
-          </div>
-          <div className="formField">
-            <label className="formLabel">Title</label>
-            <input
-              type="text"
-              placeholder={whyIsOpen === "createTask" ? "Title" : `${previousTitle}`}
+    <Modal show={isOpen} onHide={onClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          {whyIsOpen === "createTask" && <h2>Create New Task</h2>}
+          {whyIsOpen !== "createTask" && <h2>Edit Selected Task</h2>}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <FloatingLabel controlId="TitleTI" label="Title" className="mb-3">
+            <Form.Control
+              as="input"
+              placeholder={whyIsOpen === "createTask" ? "Set the task Title" : `${previousTitle}`}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="formTextInput"
+              contentEditable
             />
-          </div>
-          <div className="formField">
-            <label className="formLabel">Description</label>
-            <input
-              type="text"
-              placeholder="Description"
+          </FloatingLabel>
+          <FloatingLabel controlId="DescriptionTI" label="Description" className="mb-3">
+            <Form.Control
+              as="input"
+              placeholder="Set the task Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="formTextInput"
             />
-          </div>
-          <select value={priority} onChange={(e) => setPriority(e.target.value)} className="formSelectInput">
+          </FloatingLabel>
+          <Form.Select id="PriorityOG" className="mb-3" value={priority} onChange={(e) => setPriority(e.target.value)}>
             <option value="">Select Priority</option>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
-          </select>
+          </Form.Select>
           {whyIsOpen === "createTask" && (
-            <button type="submit" className="formSubmit" onClick={handleTaskCreation}>
+            <Button variant="secondary" type="submit" onClick={handleTaskCreation}>
               Create Task
-            </button>
+            </Button>
           )}
           {whyIsOpen !== "createTask" && (
-            <button type="submit" className="formSubmit" onClick={handleTaskEditing}>
+            <Button variant="secondary" type="submit" onClick={handleTaskEditing}>
               Edit Task
-            </button>
+            </Button>
           )}
-        </form>
-      </div>
-    </div>
+        </Form>
+      </Modal.Body>
+    </Modal>
   );
 }
 

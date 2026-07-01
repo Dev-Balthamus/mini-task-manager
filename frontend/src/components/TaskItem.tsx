@@ -1,10 +1,11 @@
 import { type ChangeEvent } from "react";
+import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import type { Task } from "../assets/custom-hooks/useTasksJSON";
 import { useModal } from "../assets/custom-hooks/useModal";
-import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
+import { Button, ListGroup } from "react-bootstrap";
 import TaskForm from "./TaskForm";
-import "./TaskItem.css";
 import { editTask, deleteTask } from "../assets/apis";
+import "./TaskItem.css";
 
 function TaskItem({ item }: { item: Task }) {
   const { isModalOpen, openModal, closeModal } = useModal();
@@ -38,7 +39,7 @@ function TaskItem({ item }: { item: Task }) {
   }
 
   return (
-    <li className={`taskItem ${item.executed === true ? "taskItemExecuted" : ""}`}>
+    <ListGroup.Item className={`taskItem ${item.executed === true ? "taskItemExecuted" : ""}`}>
       <div className="taskItemTitle">
         <h3>{item.title}</h3>
         <p>{item.description}</p>
@@ -58,11 +59,15 @@ function TaskItem({ item }: { item: Task }) {
         />
       </div>
       <div className="taskItemActions">
-        <button onClick={openModal}>Modify</button>
+        <Button variant="secondary" onClick={openModal}>
+          Modify
+        </Button>
         <TaskForm isOpen={isModalOpen} whyIsOpen={item.id} onClose={closeModal} />
-        <button onClick={handleTaskDeletion}>Delete</button>
+        <Button variant="secondary" onClick={handleTaskDeletion}>
+          Delete
+        </Button>
       </div>
-    </li>
+    </ListGroup.Item>
   );
 }
 

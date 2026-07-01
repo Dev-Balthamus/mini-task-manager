@@ -1,8 +1,9 @@
+import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import { useModal } from "../assets/custom-hooks/useModal";
+import { Button } from "react-bootstrap";
 import TaskForm from "./TaskForm";
 import Filters from "./Filters";
 import TasksList from "./TasksList";
-import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import "./TaskManagerContainer.css";
 
 function TaskManagerContainer() {
@@ -12,12 +13,11 @@ function TaskManagerContainer() {
   return (
     <div className="taskManagerContainer">
       <div className="newTaskContainer">
-        <button onClick={openModal} className="taskItemCreate">
+        <Button variant="secondary" onClick={openModal}>
           New Task
-        </button>
+        </Button>
         <TaskForm isOpen={isModalOpen} whyIsOpen="createTask" onClose={closeModal} />
       </div>
-
       <div className="tasksContainer">
         {tasks && <Filters />}
         {loading && <h2>Loading Tasks' List...</h2>}

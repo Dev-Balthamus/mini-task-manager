@@ -7,27 +7,39 @@
 }
 
 .filtersTitle {
+  margin-bottom: 2.25vw;
   font-size: 0.875rem;
   font-weight: bold;
-  margin-bottom: 1vw;
 }
 
-.filter {
-  height: 1.3125rem;
-  margin-bottom: 1vw;
+body .filtersContainer .form-select {
+  margin-bottom: 2.25vw;
+  font: inherit;
   font-size: 0.875rem;
-  font-weight: bold;
   color: #636a6e;
 }
 
-.filter option {
+body .filtersContainer .form-select:focus {
+  border-color: #dadcdd;
+  box-shadow: none;
+}
+
+body .filtersContainer .form-select option {
   font-size: 0.875rem;
-  color: #71797e;
+  color: #222425;
 }
 
 @media (min-width: 326.1px) and (max-width: 471px) {
   .filtersContainer {
     padding: 1.25vh 0;
+  }
+
+  .filtersTitle {
+    margin-bottom: 1.8vw;
+  }
+
+  body filtersContainer .form-select {
+    margin-bottom: 1.8vw;
   }
 }
 
@@ -40,10 +52,12 @@
   }
 
   .filtersTitle {
-    margin-right: 2vw;
+    margin-bottom: 0;
+    margin-right: 3vw;
   }
 
-  .filter {
+  body .filtersContainer .form-select {
+    margin-bottom: 0;
     margin-right: 1vw;
   }
 }
@@ -57,10 +71,12 @@
   }
 
   .filtersTitle {
-    margin-right: 2.5vw;
+    margin-bottom: 0;
+    margin-right: 3.75vw;
   }
 
-  .filter {
+  body .filtersContainer .form-select {
+    margin-bottom: 0;
     margin-right: 1.25vw;
   }
 }
@@ -74,10 +90,12 @@
   }
 
   .filtersTitle {
-    margin-right: 3vw;
+    margin-bottom: 0;
+    margin-right: 4.5vw;
   }
 
-  .filter {
+  body .filtersContainer .form-select {
+    margin-bottom: 0;
     margin-right: 1.5vw;
   }
 }

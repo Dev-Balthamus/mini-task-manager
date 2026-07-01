@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export interface Modal {
+export interface ManageModal {
   isOpen: boolean;
   whyIsOpen: string | number;
   onClose: () => void;

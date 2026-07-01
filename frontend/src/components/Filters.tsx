@@ -1,3 +1,4 @@
+import { FormSelect } from "react-bootstrap";
 import { type PriorityCriterion, type ExecutionCriterion, useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import "./Filters.css";
 
@@ -17,16 +18,16 @@ function Filters() {
   return (
     <div className="filtersContainer">
       <h5 className="filtersTitle">Filters</h5>
-      <select className="filter" value={priority} onChange={handlePriorityChange}>
+      <FormSelect value={priority} onChange={handlePriorityChange}>
         <option value="">Order by Priority...</option>
         <option value="low">from Low to High</option>
         <option value="high">from High to Low</option>
-      </select>
-      <select className="filter" value={execution} onChange={handleExecutionChange}>
+      </FormSelect>
+      <FormSelect value={execution} onChange={handleExecutionChange}>
         <option value="">Filter by Execution Status...</option>
         <option value="executed">Executed Tasks</option>
         <option value="pending">Pending Tasks</option>
-      </select>
+      </FormSelect>
     </div>
   );
 }
