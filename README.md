@@ -2,6 +2,7 @@
 
 **Mini Task Manager** è un progetto di app per la gestione di compiti e/o attività da svolgere.
 Allo stadio di sviluppo corrente, l'app permette ad un utente unico di annotare i propri task, salvarli in una lista ri-ordinabile, tracciarne lo stato di esecuzione, cancellarli dalla lista qualora si voglia liberare spazio.
+<br>
 
 ## Caratteristiche principali
 
@@ -9,14 +10,14 @@ Allo stadio di sviluppo corrente, l'app permette ad un utente unico di annotare 
 - **Ordinare i task**: L'utente può ordinare i task in base alla priorità definita (bassa - media - alta) o allo stato di esecuzione (eseguito o no). Task con priorità e/o stato di esecuzione uguali tra loro, sono ordinati da quello creato per primo a quello creato per ultimo.
 - **Modificare o eliminare i task**: L'utente può modificare o eliminare ogni singolo task, cliccando sull'apposito pulsante posto nello spazio del task nella lista. Cliccando per modificare un task, si riapre il form per definirne le specifiche: salvarlo senza avere apportato modifiche lascia il task con le specifiche di prima della modifica. Cliccando per eliminare un task, si apre un avviso in cui si chiede conferma o no prima di procedere all'effettiva eliminazione del task dall'elenco di quelli in memoria.
 - **Salvataggio task**: Il salvataggio dei task avviene in un file JSON, ciascuno come oggetto entro un unico array per l'intero file.
+  <br>
 
 ## Tecnologie utilizzate
 
 - Frontend: TypeScript, React, Vite, HTML, CSS;
 - Backend: Node, Express.
 - DevOps: Docker.
-
-<br>
+  <br>
 
 ## Come configurare e avviare il progetto
 
@@ -46,6 +47,7 @@ Per utilizzare l'app di progetto, bisogna che una scheda di un browser punti all
 
 Da questo momento in avanti, tutta la gestione delle sessioni dell'app e dei suoi container può anche essere eseguita via client Docker Desktop, se installato sulla macchina dalla quale si sta lavorando.
 Per una gestione delle sessioni e dei container tutta da terminale, si rimanda alla documentazione ufficiale di Docker CLI: **https://docs.docker.com/reference/cli/docker/**.
+<br>
 
 ## ~ Breve nota sul percorso dello sviluppo - v. 1.0.0 ~
 
@@ -64,6 +66,7 @@ Il passaggio più difficile da affrontare è stato quello della corretta struttu
    Dunque, in fatto di struttura presentazionale dei form di creazione e modifica di task, non c'è stata duplicazione di codice in quanto in questo progetto entrambe le varianti del form sono gestite in un unico componente React le cui parti cambiano grazie a tecniche di rendering condizionale a seconda di quale pulsante in quale punto dell'applicativo richiama il form. In fatto di logica dietro ai form, se è vero che i due flussi di gestione e manipolazione dei dati dei task sono decisamente simili tra creazione e modifica di un task, l'unico modo per evitare anche solo la possibilità di scrivere codice duplicato sarebbe ricorrere alle strutture condizionali, dimezzando il numero di funzioni necessarie a gestire le due differenti logiche.
 5. Cosa viene messo in un "useEffect" e cosa no?
    Considerato che si può impiegare un "useEffect" nei casi di fetch di dati, definizione di listener globali, gestione di timer e intervalli e poco altro ancora, in questo progetto se ne è limitato l'uso alla chiamata dell'API di tipo _get-all_ per il recupero dei dati dell'intero JSON di task.
+   <br>
 
 ## ~ Altre domande aperte, e loro risposte - v.1.1.0 ~
 
@@ -73,6 +76,7 @@ Il passaggio più difficile da affrontare è stato quello della corretta struttu
    Allora, in effetti se si stabilisce che l'ID dei task sia generato sul client, si può verificare che due task vengano generati nello stesso millisecondo, e quindi con un ID identico tra loro. Ragione per cui conviene che l'ID di un task sia generato sul server, ed è stata lavorata una modifica di questo genere.
 8. Come si dovrebbe testare l'endpoint di creazione senza aprire il browser?
    Per testare gli endpoint di un'app, e quindi nel nostro caso quello di creazione di un task, senza aprire un browser, si dovrebbe ricorrere a specifici software per il testing di API, qual'è anche Postman. Va però considerato il fatto che, nel caso nella struttura dell'app sia definito che l'ID come timestamp venga generato lato client, per il testing dell'endpoint di creazione si dovrebbe fornire un mock ID precedentemente generato fuori dal flusso di lavoro dell'app: cosa che porta un ulteriore punto a favore dello spostamento della generazione del timestamp per ID lato server.
+   <br>
 
 ## ~ Altre domande aperte, e loro risposte - v.1.2.0 ~
 
