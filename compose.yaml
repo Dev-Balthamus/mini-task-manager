@@ -1,0 +1,21 @@
+version: "1.2"
+name: mini-task-manager
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: frontend.Dockerfile
+    environment:
+      - VITE_API_URL=http://localhost:3000/api/tasks
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: backend.Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./backend/tasks.json:/mini-task-manager/backend/tasks.json

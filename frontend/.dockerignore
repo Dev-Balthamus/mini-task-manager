@@ -1,0 +1,43 @@
+# Dependencies and build output
+node_modules/
+dist/
+out/
+.tmp/
+.cache/
+
+# Vite, Webpack, and React-specific build artifacts
+.vite/
+.vitepress/
+.eslintcache
+.npm/
+coverage/
+jest/
+cypress/
+cypress/screenshots/
+cypress/videos/
+reports/
+
+# Environment and config files
+_.env_
+\*.log
+
+# TypeScript build artifacts
+\*.tsbuildinfo
+
+# Local development files
+.git/
+.gitignore
+.vscode/
+.idea/
+\*.swp
+.DS_Store
+Thumbs.db
+
+# Ignore Docker-related files
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.override.yml
+
+# Build-specific cache files
+\*.lock
