@@ -13,7 +13,7 @@ const port = 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const tasksJSONPath = path.join(__dirname, "tasks.json");
+const tasksJSONPath = path.join(__dirname, "data", "tasks.json");
 
 const taskSchema = Joi.object({
   id: Joi.number().integer().required(),
@@ -122,7 +122,7 @@ app.put("/api/tasks/:id", async (req, res) => {
     // L'array aggiornato viene sovrascritto nel file JSON
     await fs.promises.writeFile(tasksJSONPath, JSON.stringify(tasks, null, 2));
 
-    return res.status(200).json({ msg: "Task aggiornato!", task: task });
+    return res.status(200).json({ msg: "Task aggiornato!", task: editedTask });
   } catch (err) {
     console.error("Errore durante l'aggiornamento del task:", err);
     return res.status(500).json({ msg: "Errore interno del server" });
