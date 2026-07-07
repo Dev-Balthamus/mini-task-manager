@@ -12,14 +12,18 @@ Allo stadio di sviluppo corrente, l'app permette ad un utente unico di annotare 
 
 ## Tecnologie utilizzate
 
-- **Frontend**: TypeScript, React, Vite, HTML, CSS;
-- **Backend**: Node, Express.
+- Frontend: TypeScript, React, Vite, HTML, CSS;
+- Backend: Node, Express.
+- DevOps: Docker.
+
+<br>
 
 ## Come configurare e avviare il progetto
 
-Il progetto dell'app **Mini Task Manager** consta di un repository unico, al cui primo livello di articolazione si distinguono una cartella che contiene tutto il Frontend e una che contiene tutto il Backend.<br>
+Il progetto dell'app Mini Task Manager consta di un repository unico, al cui primo livello di articolazione si distinguono una cartella che contiene tutto il Frontend e una che contiene tutto il Backend.
 Tutte le volte che il progetto sia clonato ex novo su macchina locale, vi sono delle azioni preliminari che vanno compiute.
-La prima riguarda sia il Frontend sia il Backend, ed è: l'installazione delle dipendenze del progetto. Essendo diverse tra le due parti del progetto, il comando da terminale specifico per questo scopo, ossia **npm install**, va eseguito due volte:
+
+La prima riguarda sia il Frontend sia il Backend, ed è: l'installazione delle dipendenze del progetto. Essendo diverse tra le due parti del progetto, il comando da terminale specifico per questo scopo, ossia npm install, va eseguito due volte:
 
 - una quando il terminale punta a _"./mini-task-manager/frontend/"_, per installare le dipendenze del Frontend
 - una quando il terminale punta a _"./mini-task-manager/backend/"_, per installare le dipendenze del Backend
@@ -29,13 +33,19 @@ La seconda riguarda solo il Frontend, perché in esso l'URL principale delle API
 - nella directory _"./mini-task-manager/frontend/"_, duplicare il file **.env.example** e rinominare la copia in _.env_;
 - aprire il nuovo file **.env** per rimuovere il commento e aggiornare i placeholders nel valore della variabile d'ambiente con quelli effettivi configurati sulla macchina in uso e la copia del progetto in esecuzione.
 
-Chiaramente Frontend e Backend vanno avviati e tenuti attivi sempre insieme affinché il progetto funzioni.
-Pertanto, tanto che si lavori in un IDE tanto che no, si richiede di aprire due terminali:
+La terza è dovuta al fatto che l'intero progetto si presenta Dockerizzato (cioè vede l'implementazione di Docker).
+Si fa dunque presente ora che, al fine di avviare il progetto, è necessario avere almeno il Docker Engine installato sulla macchina in uso.
+Verificata tale pre-condizione, si apre un terminale che punta a _"./mini-task-manager/"_ sul quale eseguire il comando docker compose up -d --build.
+Grazie a questo comando, Docker provvederà a:
 
-- uno che punta a _"./mini-task-manager/frontend/"_, sul quale eseguire il comando **npm run dev**
-- uno che punta a _"./mini-task-manager/backend/"_, sul quale eseguire il comando **npm start**
-  Una volta che sia il Frontend sia il Backend saranno avviati, sarà possibile utilizzare l'applicazione da un qualsiasi browser che punti a _http://localhost:5173/_.
-  (N.B.: "5173" è la porta che Vite imposta di default per far girare le applicazioni React: durante lo sviluppo si è deciso di lasciare quella. Cambiare la porta è possibile, andando a modificare il file "vite.config".)
+- costruire sulla macchina le immagini dei due container, uno per il Frontend e uno per il Backend, dell'applicazione;
+- costruire i container ed eventuali volumi ad essi collegati, oltre che ad aprire le porte definite per collegarli in rete;
+- avviare i container in background.
+
+Per utilizzare l'app di progetto, bisogna che una scheda di un browser punti all'indirizzo su cui risponde il Frontend del Mini Task Manager; ossia: **http://localhost:5173**.
+
+Da questo momento in avanti, tutta la gestione delle sessioni dell'app e dei suoi container può anche essere eseguita via client Docker Desktop, se installato sulla macchina dalla quale si sta lavorando.
+Per una gestione delle sessioni e dei container tutta da terminale, si rimanda alla documentazione ufficiale di Docker CLI: **https://docs.docker.com/reference/cli/docker/**.
 
 ## ~ Breve nota sul percorso dello sviluppo - v. 1.0.0 ~
 
@@ -63,3 +73,13 @@ Il passaggio più difficile da affrontare è stato quello della corretta struttu
    Allora, in effetti se si stabilisce che l'ID dei task sia generato sul client, si può verificare che due task vengano generati nello stesso millisecondo, e quindi con un ID identico tra loro. Ragione per cui conviene che l'ID di un task sia generato sul server, ed è stata lavorata una modifica di questo genere.
 8. Come si dovrebbe testare l'endpoint di creazione senza aprire il browser?
    Per testare gli endpoint di un'app, e quindi nel nostro caso quello di creazione di un task, senza aprire un browser, si dovrebbe ricorrere a specifici software per il testing di API, qual'è anche Postman. Va però considerato il fatto che, nel caso nella struttura dell'app sia definito che l'ID come timestamp venga generato lato client, per il testing dell'endpoint di creazione si dovrebbe fornire un mock ID precedentemente generato fuori dal flusso di lavoro dell'app: cosa che porta un ulteriore punto a favore dello spostamento della generazione del timestamp per ID lato server.
+
+## ~ Altre domande aperte, e loro risposte - v.1.2.0 ~
+
+9.  Una volta integrato Bootstrap nel progetto, quanto codice TSX e CSS scritto da zero da parte dello sviluppatore può essere eliminato? Quali file CSS diventano inutili e possono essere cancellati?
+    Integrare Bootstrap in questo progetto ha consentito di tagliare la code base di parecchie linee di codice, soprattutto sul componente "_TaskForm_" e il CSS ad esso relativo, rendendo più leggibile la struttura del componente e la sua stilizzazione più armoniosa. Non è avvenuto, invece, di cancellare interi file CSS poiché procedere in tal senso e dunque accettare talune stilizzazioni di default di Bootstrap andava a produrre disarmonie nell'estetica dell'app, e si è voluto preservare l'originalità dell'estetica definita dallo sviluppatore, ricorrendo pertanto a tutti i file CSS già creati come mezzo per intervenire sul CSS di Bootstrap per modificarlo e armonizzarlo all'occorrenza. Fare questo tipo di lavoro ha prodotto come ulteriore conseguenza il refactoring di porzioni di CSS scritto da zero a fini di migliorare o correggere dettagli estetici.
+10. In Docker, qual è la differenza tra "_immagine_" e "_container_?
+    In Docker, una **immagine** è un template per creare un dato container; in sostanza è un file di tipo "_Dockerfile_" con caratteristica di essere "read only", che consta di un dato numero di istruzioni ordinate e sequenziate in layers, tra cui vi può essere l'import di altre immagini già esistenti; le immagini vengono salvate in registri, che sono o pubblici o privati o corporate, per accedere ai quali talvolta serve autenticarsi con credenziali del proprio account Docker.
+    Invece, un **container** è una istanza di una immagine Docker, isolata dalla macchina su cui esiste ma anche dagli altri container eventualmente esistenti su di essa, che si può connettere a una o più reti mediante le porte che abbia definite, e cui può essere abbinata (in termini tecnici "montata") una allocazione di memoria dedicata nella quale far persistere alcuni dati o configurazioni anche nel caso di corruzione o eliminazione del container stesso.
+11. In un progetto Dockerizzato che abbia un frontend con React, quando si fissano le variabili d'ambiente Vite: nella fase di build o di esecuzione dell'app?
+    In un progetto Dockerizzato il cui frontend è scritto in React con Vite, se vi sono variabili d'ambiente di Vite esse vengono fissate durante la fase di build; per questo motivo, infatti, quando si scrive il file compose del progetto, nella sezione del servizio definito per il frontend, c'è la possibilità di dedicare una sezione apposita all'environment.
