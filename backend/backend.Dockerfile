@@ -24,6 +24,11 @@ WORKDIR /mini-task-manager/backend
 COPY --from=deps --chown=node:node /mini-task-manager/backend/node_modules ./node_modules
 COPY --chown=node:node . .
 
+
+RUN ["chmod", "+x", "entrypoint.sh"]
+
+ENTRYPOINT ["./entrypoint.sh"]
+
 USER node
 
 EXPOSE 3000
