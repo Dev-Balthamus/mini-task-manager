@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { Pool } from "pg";
 import { execSync } from "child_process";
 
-describe("Verifica Migrazioni Database", () => {
+describe("Verifica Migrazione Database - Mini Task Manager", () => {
   let pool: Pool;
   let dbUrl: string;
 

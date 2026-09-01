@@ -8,7 +8,7 @@ export class PostgresTasksRepository implements ITasksRepository {
     return rows;
   }
 
-  async getById(id: number): Promise<Task | null> {
+  async getById(id: string): Promise<Task | null> {
     const { rows } = await pool.query("SELECT * FROM tasks WHERE id = $1", [id]);
     return rows[0] || null;
   }
@@ -24,7 +24,7 @@ export class PostgresTasksRepository implements ITasksRepository {
     return rows[0];
   }
 
-  async update(id: number, taskData: Partial<CreateTaskDTO>): Promise<Task | null> {
+  async update(id: string, taskData: Partial<CreateTaskDTO>): Promise<Task | null> {
     const { title, description, priority, executed } = taskData;
     const query = `
       UPDATE tasks 
@@ -39,7 +39,7 @@ export class PostgresTasksRepository implements ITasksRepository {
     return rows[0] || null;
   }
 
-  async delete(id: number): Promise<Task | null> {
+  async delete(id: string): Promise<Task | null> {
     const { rows } = await pool.query("DELETE FROM tasks WHERE id = $1 RETURNING *", [id]);
     return rows[0] || null;
   }

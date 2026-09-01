@@ -10,7 +10,7 @@
     "m-create": "node-pg-migrate create -m migrations -e ts",
     "m-up": "node-pg-migrate up -m migrations --import ts-node/esm",
     "m-down": "node-pg-migrate down -m migrations --import ts-node/esm",
-    "test": "node --test --import ts-node/esm --env-file=../.env tests/*.test.ts"
+    "test": "npm run build && node --test --env-file=../.env tests/*.test.ts"
   },
   "keywords": [],
   "author": "",

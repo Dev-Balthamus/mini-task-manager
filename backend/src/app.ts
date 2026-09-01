@@ -56,8 +56,8 @@ app.get("/api/tasks", async (_req, res) => {
 //ENDPOINT GET-ONE-BY-ID
 app.get("/api/tasks/:id", async (req, res) => {
   // Qui viene salvato e verificato l'ID del task che si vuole trovare
-  const id = Number(req.params.id);
-  if (isNaN(id)) {
+  const { id } = req.params;
+  if (!id || typeof id !== "string") {
     return res.status(400).json({ msg: "ID non valido" });
   }
 
@@ -79,8 +79,8 @@ app.get("/api/tasks/:id", async (req, res) => {
 //ENDPOINT MODIFY-ONE-BY-ID
 app.put("/api/tasks/:id", async (req, res) => {
   // Qui viene salvato e verificato l'ID del task che si vuole trovare
-  const id = Number(req.params.id);
-  if (isNaN(id)) {
+  const { id } = req.params;
+  if (!id || typeof id !== "string") {
     return res.status(400).json({ msg: "ID non valido" });
   }
 
@@ -109,8 +109,8 @@ app.put("/api/tasks/:id", async (req, res) => {
 //ENDPOINT DELETE-ONE-BY-ID
 app.delete("/api/tasks/:id", async (req, res) => {
   // Qui viene salvato e verificato l'ID del task che si vuole trovare
-  const id = Number(req.params.id);
-  if (isNaN(id)) {
+  const { id } = req.params;
+  if (!id || typeof id !== "string") {
     return res.status(400).json({ msg: "ID non valido" });
   }
 
