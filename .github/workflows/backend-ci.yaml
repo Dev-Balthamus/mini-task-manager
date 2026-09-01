@@ -1,0 +1,65 @@
+name: Backend Integration Tests
+
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  test_backend:
+    runs-on: ubuntu-latest
+
+    # Definiamo Postgres come servizio containerizzato per il job
+    services:
+      postgres_db:
+        image: postgres:17.10-alpine3.24
+        env:
+          POSTGRES_USER: mtm_ci_tester
+          POSTGRES_PASSWORD: SciSw04rd!P-m1_n1
+          POSTGRES_DB: mtm_tasks_store_test
+        ports:
+          - 5432:5432
+        # Aggiungiamo un healthcheck per assicurarci che il DB sia pronto prima di lanciare i test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    # Variabili d'ambiente per il backend
+    env:
+      PGUSER: mtm_ci_tester
+      PGPASSWORD: SciSw04rd!P-m1_n1
+      # In GitHub Actions, i servizi esposti sulle porte sono accessibili tramite localhost
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGDATABASE: mtm_tasks_store_test
+      PGSSLMODE: "disable"
+      DATABASE_URL: "postgres://mtm_ci_tester:SciSw04rd!P-m1_n1@localhost:5432/mtm_tasks_store_test"
+
+    steps:
+      - name: Checkout del codice
+        uses: actions/checkout@v4
+
+      # Utilizziamo l'azione ufficiale per configurare Node.js e gestire la cache
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Installa le dipendenze
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Genera il file .env
+        working-directory: ./backend
+        run: echo "DATABASE_URL=$DATABASE_URL" > ../.env
+
+      - name: Lancia la suite di test
+        working-directory: ./backend
+        run: npm run test
