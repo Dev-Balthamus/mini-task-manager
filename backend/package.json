@@ -7,10 +7,11 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "nodemon --exec \"node --loader ts-node/esm\" src/server.ts",
-    "m-create": "node-pg-migrate create -m migrations -e ts",
+    "m-create": "node-pg-migrate create -m migrations -j ts",
     "m-up": "node-pg-migrate up -m migrations --import ts-node/esm",
     "m-down": "node-pg-migrate down -m migrations --import ts-node/esm",
-    "test": "npm run build && node --test --env-file=../.env tests/*.test.ts"
+    "test": "npm run build && node --test --env-file=../.env tests/*.test.ts",
+    "seed": "npm run build && node --env-file=../.env dist/repository/infrastructure/seed-mock-tasks.js"
   },
   "keywords": [],
   "author": "",
