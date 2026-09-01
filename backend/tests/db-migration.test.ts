@@ -1,12 +1,12 @@
 // backend/tests/database.test.js
 import { test, describe, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { Pool } from "pg"; // 1. Cambiato da Client a Pool
+import { Pool } from "pg";
 import { execSync } from "child_process";
 
 describe("Verifica Migrazioni Database", () => {
-  let pool;
-  let dbUrl;
+  let pool: Pool;
+  let dbUrl: string;
 
   // Prima di tutti i test, inizializzazione del Pool
   before(() => {
@@ -75,7 +75,8 @@ describe("Verifica Migrazioni Database", () => {
         Verifica che l'errore sia effettivamente legato al tipo ENUM di PostgreSQL
         Si basa sul codice d'errore nativo Postgres (22P02) o sulla presenza di 'task_priority'
         */
-        const isEnumError = err.code === "22P02" || err.message.includes("task_priority");
+        const pgError = err as Error & { code?: string };
+        const isEnumError = pgError.code === "22P02" || pgError.message.includes("task_priority");
         return isEnumError;
       },
       "Il database avrebbe dovuto rifiutare una priorità non valida",

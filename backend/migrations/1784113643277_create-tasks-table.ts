@@ -1,21 +1,15 @@
-/**
- * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
- */
-export const shorthands = undefined;
+import type { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate";
 
-/**
- * @param pgm {import('node-pg-migrate').MigrationBuilder}
- * @param run {() => void | undefined}
- * @returns {Promise<void> | void}
- */
-export const up = (pgm) => {
+export const shorthands: ColumnDefinitions | undefined = undefined;
+
+export const up = (pgm: MigrationBuilder): void => {
   // Si abilita la generazione di UUID interna a PostgreSQL
   pgm.createExtension("uuid-ossp", { ifNotExists: true });
 
   // Si crea il tipo ENUM per la priorità
   pgm.createType("task_priority", ["low", "medium", "high"]);
 
-  // Si crea la tabella tasks nel database
+  // Si crea la tabella `tasks` nel database
   pgm.createTable("tasks", {
     id: {
       type: "uuid",
@@ -24,16 +18,16 @@ export const up = (pgm) => {
     },
     title: {
       type: "varchar(255)",
-      notNull: true
+      notNull: true,
     },
     description: {
-      type: "varchar(255)", 
-      notNull: false
+      type: "varchar(255)",
+      notNull: false,
     },
-    completed: { 
+    completed: {
       type: "boolean",
       notNull: true,
-      default: false
+      default: false,
     },
     priority: {
       type: "task_priority",
@@ -53,12 +47,7 @@ export const up = (pgm) => {
   });
 };
 
-/**
- * @param pgm {import('node-pg-migrate').MigrationBuilder}
- * @param run {() => void | undefined}
- * @returns {Promise<void> | void}
- */
-export const down = (pgm) => {
+export const down = (pgm: MigrationBuilder): void => {
   pgm.dropTable("tasks");
   pgm.dropType("task_priority");
 };
