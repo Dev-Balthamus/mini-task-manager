@@ -54,6 +54,11 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
+      # Valida i tipi TypeScript ed effettua la build prima dei test
+      - name: Build e Type Check
+        working-directory: ./backend
+        run: npm run build
+
       - name: Genera il file .env
         working-directory: ./backend
         run: echo "DATABASE_URL=$DATABASE_URL" > ../.env
