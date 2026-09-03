@@ -3,7 +3,7 @@
 
 
 # Deps stage: install production dependencies only.
-FROM dhi.io/node:24-alpine3.23-dev AS deps
+FROM node:24-alpine AS deps
 
 WORKDIR /mini-task-manager/backend
 
@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/root/.npm \
 
 
 # Runner stage: minimal runtime image with compiled app and production deps.
-FROM dhi.io/node:24-alpine3.23-dev AS runner
+FROM node:24-alpine AS runner
 
 ENV PATH=/mini-task-manager/backend/node_modules/.bin:$PATH
 

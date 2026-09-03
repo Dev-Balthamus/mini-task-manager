@@ -5,7 +5,7 @@
 # Layer 1 : To build the React.JS app
 
 # Step 1.1: Provide Node.JS image
-FROM dhi.io/node:24-alpine3.23-dev AS builder
+FROM node:24-alpine AS builder
 
 # Step 1.2: Define the directory inside the container
 WORKDIR /mini-task-manager/frontend
@@ -27,7 +27,7 @@ RUN npm run build
 # Layer 2: Prepare Nginx to serve Static Files
 
 # Step 2.1: Provide Nginx image
-FROM dhi.io/nginx:1.31-alpine3.24-dev AS runner
+FROM nginxinc/nginx-unprivileged:alpine AS runner
 
 # Step 2.2: Copy custom Nginx config
 COPY nginx.conf /etc/nginx/nginx.conf

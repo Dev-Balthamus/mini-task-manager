@@ -10,30 +10,29 @@ describe("Verifica Migrazioni Database", () => {
 
   // Prima di tutti i test, inizializzazione del Pool
   before(() => {
-    // Per lo `host`: se il test viene svolto GitLab CI si usa PGHOST, altrimenti si forza 'localhost' per eseguire il test in locale su PC
-    const isCI = process.env.CI || process.env.GITLAB_CI;
-    const host = isCI ? process.env.PGHOST || "postgres_db" : "localhost";
+    // Si rileva se il test stia girando in un ambiente CI (GitHub Actions o GitLab CI)
+    const isCI = Boolean(process.env.CI || process.env.GITLAB_CI);
 
-    const port = process.env.PGPORT || process.env.DB_PORT || "5432";
-    const user = process.env.PGUSER || process.env.DB_USER || "postgres";
-    const password = process.env.PGPASSWORD || process.env.DB_PASSWORD || "fr4-b4_4PSGLS";
-    const database = process.env.PGDATABASE || process.env.DB_NAME || "mtm_tasks_store";
+    /* 
+    Se in CI, si usa direttamente la DATABASE_URL fornita dal runner;
+    altrimenti, se in locale, si leggono le variabili PG* del file .env
+    */
+    const host = process.env.PGHOST || "localhost";
+    const port = process.env.PGPORT || "5432";
+    const user = process.env.PGUSER || "postgres";
+    const password = process.env.PGPASSWORD || "fr4-b4_4PSGLS";
+    const database = process.env.PGDATABASE || "mtm_tasks_store_test-l";
 
     // Si costruisce la stringa del'URL del database puntando all'host corretto
     dbUrl =
-      process.env.DATABASE_URL && isCI
+      isCI && process.env.DATABASE_URL
         ? process.env.DATABASE_URL
         : `postgres://${user}:${password}@${host}:${port}/${database}`;
 
     process.env.DATABASE_URL = dbUrl;
 
-    // Si usano le variabili d'ambiente reali del file .env
     pool = new Pool({
-      host,
-      port: parseInt(port, 10),
-      user,
-      password,
-      database,
+      connectionString: dbUrl,
       max: 3, // Numero limite di client nel contesto dei test, per non sovraccaricare PostgreSQL
     });
     // In ragione del lazy loading del pool, eseguire il `connect()` non è necessario
