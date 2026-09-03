@@ -1,4 +1,4 @@
-# Mini Task Manager v. 1.2.0
+# Mini Task Manager v. 1.3.0
 
 **Mini Task Manager** è un progetto di app per la gestione di compiti e/o attività da svolgere.
 Allo stadio di sviluppo corrente, l'app permette ad un utente unico di annotare i propri task, salvarli in una lista ri-ordinabile, tracciarne lo stato di esecuzione, cancellarli dalla lista qualora si voglia liberare spazio.
