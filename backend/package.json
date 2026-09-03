@@ -2,14 +2,15 @@
   "name": "backend",
   "version": "1.2.0",
   "description": "",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "m-create": "node-pg-migrate create",
-    "m-up": "node-pg-migrate up",
-    "m-down": "node-pg-migrate down",
-    "test": "node --test --env-file=../.env tests/db-migration.tests.js"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon --exec \"node --loader ts-node/esm\" src/server.ts",
+    "m-create": "node-pg-migrate create -m migrations -e ts",
+    "m-up": "node-pg-migrate up -m migrations --import ts-node/esm",
+    "m-down": "node-pg-migrate down -m migrations --import ts-node/esm",
+    "test": "npm run build && node --test --env-file=../.env tests/*.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,13 @@
     "pg": "^8.22.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^26.1.1",
+    "@types/pg": "^8.20.0",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^7.0.2"
   }
 }

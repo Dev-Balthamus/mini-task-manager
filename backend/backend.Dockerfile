@@ -7,30 +7,28 @@ FROM node:24-alpine AS deps
 
 WORKDIR /mini-task-manager/backend
 
+# 1. Copia i file delle dipendenze e installa tutto (dev + prod per far girare tsc)
+COPY package*.json ./
+
 RUN --mount=type=cache,target=/root/.npm \
-    --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    npm ci --omit=dev
+    npm ci
 
+# 2. Copia l'intero codice sorgente
+COPY . .
 
+# 3. Compila TypeScript generando dist/
+RUN npm run build
 
-# Runner stage: minimal runtime image with compiled app and production deps.
-FROM node:24-alpine AS runner
+# 4. Assicura i permessi corretti per l'entrypoint
+RUN chmod +x entrypoint.sh
 
 ENV PATH=/mini-task-manager/backend/node_modules/.bin:$PATH
 
-WORKDIR /mini-task-manager/backend
-
-COPY --from=deps --chown=node:node /mini-task-manager/backend/node_modules ./node_modules
-COPY --chown=node:node . .
-
-
-RUN ["chmod", "+x", "entrypoint.sh"]
-
-ENTRYPOINT ["./entrypoint.sh"]
+EXPOSE 3000
 
 USER node
 
-EXPOSE 3000
+ENTRYPOINT ["./entrypoint.sh"]
 
-CMD ["node", "server.js"]
+# 5. Avvia il server compilato in JS
+CMD ["node", "dist/server.js"]
