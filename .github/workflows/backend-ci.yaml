@@ -46,8 +46,8 @@ jobs:
       - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: "24"
+          cache: "npm"
           cache-dependency-path: backend/package-lock.json
 
       - name: Installa le dipendenze
@@ -62,6 +62,10 @@ jobs:
       - name: Genera il file .env
         working-directory: ./backend
         run: echo "DATABASE_URL=$DATABASE_URL" > ../.env
+
+      - name: Lancia le migrazioni
+        working-directory: ./backend
+        run: npm run m-up
 
       - name: Lancia la suite di test
         working-directory: ./backend
