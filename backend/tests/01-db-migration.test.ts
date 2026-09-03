@@ -1,5 +1,4 @@
-// backend/tests/database.test.js
-import { test, describe, before, after } from "node:test";
+import { describe, before, after, test } from "node:test";
 import assert from "node:assert/strict";
 import { Pool } from "pg";
 import { execSync } from "child_process";
@@ -83,9 +82,9 @@ describe("Verifica Migrazione Database - Mini Task Manager", () => {
   });
 
   test("3. Rollback dello schema (DOWN)", async () => {
-    console.log("Esecuzione comando di migrazione DOWN...");
+    console.log("Esecuzione comando di migrazione DOWN (2 passi)...");
 
-    execSync(`npx node-pg-migrate down --database-url "${dbUrl}"`, { stdio: "inherit" });
+    execSync(`npx node-pg-migrate down 2 --database-url "${dbUrl}"`, { stdio: "inherit" });
 
     // Verifica dell'esecuzione del rollback del database
     const result = await pool.query(`
