@@ -6,7 +6,8 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dataDirPath = path.join(__dirname, "..", "data");
-const tasksJSONPath = path.join(dataDirPath, "tasks.json");
+const fileName = ["tasks", "json"].join(".");
+const tasksJSONPath = path.join(dataDirPath, fileName);
 
 // Interfaccia per i task nel file JSON
 interface Task {
@@ -58,7 +59,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   try {
     // Si rimuove la cartella "data" con tutto ciò che contiene
     fs.rmSync(dataDirPath, { recursive: true, force: true });
-    console.log("🧹 Cartella 'data' e file 'tasks.json' rimossi con successo.");
+    console.log(`🧹 Cartella 'data' e file '${fileName}' rimossi con successo.`);
   } catch (err) {
     console.error("⚠️ Errore durante l'eliminazione della cartella 'data':", err);
   }

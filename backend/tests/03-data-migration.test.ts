@@ -33,7 +33,7 @@ const mockTasks = [
 const isWindows = process.platform === "win32";
 const command = isWindows
   ? `findstr /s /i /m "tasks.json" src\\*`
-  : `grep -ri --exclude-dir={node_modules,dist} --exclude="data-migration.test.ts" "tasks.json" .`;
+  : `grep -ri --exclude-dir={node_modules,dist} --exclude="03-data-migration.test.ts" "tasks.json" .`;
 
 describe("Verifica Migrazione Dati - Mini Task Manager", () => {
   before(async () => {
