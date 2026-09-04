@@ -6,6 +6,7 @@ import "./cases/db-migration.test.ts";
 import "./cases/api-and-pool.test.ts";
 import "./cases/data-migration.test.ts";
 import "./cases/users-db-update-api-registration.test.ts";
+import "./cases/login-logout-api.test.ts";
 
 // Chiusura del Connection Pool alla fine di tutti i test
 after(async () => {
