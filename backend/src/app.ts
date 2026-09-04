@@ -1,12 +1,28 @@
 import express from "express";
 import { PostgresTasksRepository } from "./repository/infrastructure/PostgresTasksRepository.js";
+import { PostgresUsersRepository } from "./repository/infrastructure/PostgresUsersRepository.js";
 import Joi from "joi";
 import morgan from "morgan";
 import cors from "cors"; // Per far comunicare frontend e backend se sono su porte diverse
+import bcrypt from "bcrypt";
 
 const app = express();
 const tasksRepo = new PostgresTasksRepository();
+const usersRepo = new PostgresUsersRepository();
 
+// Schema di validazione per credenziali dei nuovi oggetti di tipo `user`
+const registerUserBodySchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.email": "L'email inserita non è valida",
+    "any.required": "L'email è un campo obbligatorio",
+  }),
+  password: Joi.string().min(11).required().messages({
+    "string.min": "La password deve contenere almeno 11 caratteri",
+    "any.required": "La password è un campo obbligatorio",
+  }),
+});
+
+// Schema di validazione per gli oggetti di tipo `task`
 const taskBodySchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().optional().allow(""),
@@ -17,6 +33,56 @@ const taskBodySchema = Joi.object({
 app.use(morgan("dev"));
 app.use(cors()); // Per far parlare React con Express
 app.use(express.json()); // Per permettere a Express di leggere il JSON inviato nel body da React
+
+// ==================================
+// USERS ENDPOINTS
+// ==================================
+
+// ENDPOINT REGISTER USER
+app.post("/api/auth/register", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Si valida l'input con Joi
+  const { error, value } = registerUserBodySchema.validate({ email, password });
+  if (error) {
+    return res.status(400).json({ msg: error.details[0]?.message });
+  }
+
+  try {
+    // Si controlla se esiste già un utente con la mail inserita
+    const existingUser = await usersRepo.findByEmail(value.email);
+    if (existingUser) {
+      return res.status(409).json({ msg: "C'è già un utente registrato con la mail inserita" });
+    }
+
+    // Si esegue l'hash della password (Salt Factor 10)
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(value.password, saltRounds);
+
+    // Si salva l'utente sul database
+    const newUser = await usersRepo.register({
+      email: value.email,
+      password: hashedPassword,
+    });
+
+    // Si manda risposta al client (escludendo la password dai dati per il riscontro)
+    return res.status(201).json({
+      msg: "Utente registrato con successo!",
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        created_at: newUser.created_at,
+      },
+    });
+  } catch (e) {
+    console.error("Errore nell'operazione di registrazione dell'utente: ", e);
+    return res.status(500).json({ msg: "Errore interno del server" });
+  }
+});
+
+// ==================================
+// TASKS ENDPOINTS
+// ==================================
 
 // ENDPOINT CREATE
 app.post("/api/tasks", async (req, res) => {
