@@ -98,3 +98,20 @@ export const login = async (req: Request, res: Response) => {
     return res.status(500).json({ msg: "Errore interno del server" });
   }
 };
+
+//ENDPOINT LOGOUT USER
+export const logout = async (_req: Request, res: Response) => {
+  try {
+    // Si rimuove il cookie 'token' impostandone la data di scadenza nel passato
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return res.status(200).json({ msg: "Logout effettuato con successo!" });
+  } catch (e) {
+    console.error("Errore durante il logout: ", e);
+    return res.status(500).json({ msg: "Errore interno del server" });
+  }
+};
