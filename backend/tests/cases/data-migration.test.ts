@@ -4,12 +4,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { pool } from "../dist/repository/infrastructure/pool.js";
-import { up as migrateJSONtoPG } from "../migrations/1784876179819_migrate-json-to-pg.ts";
+import { pool } from "../../src/repository/infrastructure/pool.ts";
+import { up as migrateJSONtoPG } from "../../migrations/1784876179819_migrate-json-to-pg.ts";
+import { getTestDatabaseUrl } from "../helpers/get-test-db-url.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dataDirPath = path.join(__dirname, "..", "data");
+const projectRoot = path.resolve(__dirname, "..", "..");
+const dataDirPath = path.join(projectRoot, "data");
 const tasksJSONPath = path.join(dataDirPath, "tasks.json");
 
 // Dati di un paio di task di test
@@ -37,24 +39,8 @@ const command = isWindows
 
 describe("Verifica Migrazione Dati - Mini Task Manager", () => {
   before(async () => {
-    // Si inizializza lo schema database necessario per la migrazione usando direttamente il pool
-    await pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-    await pool.query(`
-      DO $$ BEGIN
-        CREATE TYPE task_priority AS ENUM ('low', 'medium', 'high');
-      EXCEPTION
-        WHEN duplicate_object THEN null;
-      END $$;
-    `);
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS tasks (
-        id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-        title varchar(255) NOT NULL,
-        description varchar(255),
-        priority task_priority DEFAULT 'medium' NOT NULL,
-        executed boolean DEFAULT false NOT NULL
-      );
-    `);
+    // 1. Allineamento centralizzato dell'URL del Database
+    process.env.DATABASE_URL = getTestDatabaseUrl();
 
     // In via preventiva si pulisce il database da eventuali vecchi task di test
     await pool.query("DELETE FROM tasks WHERE title LIKE 'Test Task Migration%'");
@@ -69,7 +55,6 @@ describe("Verifica Migrazione Dati - Mini Task Manager", () => {
   after(async () => {
     // Dopo il test, pulizia del database e chiusura del Connection Pool
     await pool.query("DELETE FROM tasks WHERE title LIKE 'Test Task Migration%'");
-    await pool.end();
   });
 
   test("1. Verifica migrazione dati dal file JSON al database PostgreSQL, e successiva eliminazione di cartella `data`", async () => {

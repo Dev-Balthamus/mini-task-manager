@@ -2,50 +2,48 @@ import { describe, before, after, test } from "node:test";
 import assert from "node:assert/strict";
 import { Pool } from "pg";
 import { execSync } from "child_process";
+import { getTestDatabaseUrl } from "../helpers/get-test-db-url.ts";
 
 describe("Verifica Migrazione Database - Mini Task Manager", () => {
   let pool: Pool;
   let dbUrl: string;
 
+  // Helper per eseguire node-pg-migrate ereditando process.env ed esplicitando la dbUrl
+  const runMigrate = (action: string) => {
+    execSync(`npx node-pg-migrate ${action} -m migrations --import ts-node/esm --database-url "${dbUrl}"`, {
+      stdio: "inherit",
+      env: { ...process.env, DATABASE_URL: dbUrl }, // Garantisce l'allineamento perfetto delle variabili d'ambiente!
+    });
+  };
+
   // Prima di tutti i test, inizializzazione del Pool
-  before(() => {
-    // Si rileva se il test stia girando in un ambiente CI (GitHub Actions o GitLab CI)
-    const isCI = Boolean(process.env.CI || process.env.GITLAB_CI);
-
-    /* 
-    Se in CI, si usa direttamente la DATABASE_URL fornita dal runner;
-    altrimenti, se in locale, si leggono le variabili PG* del file .env
-    */
-    const host = process.env.PGHOST || "localhost";
-    const port = process.env.PGPORT || "5432";
-    const user = process.env.PGUSER || "postgres";
-    const password = process.env.PGPASSWORD || "fr4-b4_4PSGLS";
-    const database = process.env.PGDATABASE || "mtm_tasks_store_test-l";
-
-    // Si costruisce la stringa del'URL del database puntando all'host corretto
-    dbUrl =
-      isCI && process.env.DATABASE_URL
-        ? process.env.DATABASE_URL
-        : `postgres://${user}:${password}@${host}:${port}/${database}`;
-
+  before(async () => {
+    // Risoluzione centralizzata dell'URL (Gestisce i 3 scenari: Docker, CI, Localhost)
+    dbUrl = getTestDatabaseUrl();
     process.env.DATABASE_URL = dbUrl;
 
+    // Single Source of Truth: si passa direttamente la connectionString al Pool
     pool = new Pool({
       connectionString: dbUrl,
       max: 3, // Numero limite di client nel contesto dei test, per non sovraccaricare PostgreSQL
     });
     // In ragione del lazy loading del pool, eseguire il `connect()` non è necessario
+
+    // Si pulisce totalmente il database target effetivo prima del test
+    await pool.query("DROP TABLE IF EXISTS users, tasks, pgmigrations CASCADE;");
+    await pool.query("DROP TYPE IF EXISTS task_priority CASCADE;");
   });
 
   // Finiti tutti i test, svuotamento del Pool e chiusura delle connessioni
   after(async () => {
-    await pool.end(); // Solo così Node.JS potrà terminare il processo di testing
+    // Si ri-eseguono tutte le migrazioni sul database corretto prima di passare ai test successivi
+    runMigrate("up");
   });
 
-  test("1. Applicazione dello schema (UP)", async () => {
+  test("1. Applicazione dello schema (UP di 1 passo)", async () => {
     console.log("Esecuzione comando di migrazione UP...");
 
-    execSync(`npx node-pg-migrate up --database-url "${dbUrl}"`, { stdio: "inherit" });
+    runMigrate("up 1");
 
     // Interrogazione di PostgreSQL mediante il Pool
     const result = await pool.query(`
@@ -64,7 +62,7 @@ describe("Verifica Migrazione Database - Mini Task Manager", () => {
     await assert.rejects(
       async () => {
         await pool.query(`
-          INSERT INTO tasks (title, priority) 
+          INSERT INTO tasks (title, priority)
           VALUES ('Test Task', 'priorita_inventata')
         `);
       },
@@ -81,15 +79,14 @@ describe("Verifica Migrazione Database - Mini Task Manager", () => {
     );
   });
 
-  test("3. Rollback dello schema (DOWN)", async () => {
-    console.log("Esecuzione comando di migrazione DOWN (2 passi)...");
-
-    execSync(`npx node-pg-migrate down 2 --database-url "${dbUrl}"`, { stdio: "inherit" });
+  test("3. Rollback dello schema (DOWN di 1 passo)", async () => {
+    console.log("Esecuzione comando di migrazione DOWN...");
+    runMigrate("down 1");
 
     // Verifica dell'esecuzione del rollback del database
     const result = await pool.query(`
       SELECT EXISTS (
-        SELECT FROM information_schema.tables 
+        SELECT FROM information_schema.tables
         WHERE table_name = 'tasks'
       );
     `);

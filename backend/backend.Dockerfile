@@ -19,8 +19,10 @@ COPY . .
 # 3. Compila TypeScript generando dist/
 RUN npm run build
 
-# 4. Assicura i permessi corretti per l'entrypoint
-RUN chmod +x entrypoint.sh
+# 4. Installa dos2unix, converte i line endings e assicura i permessi per l'entrypoint
+RUN apk add --no-cache dos2unix && \
+    dos2unix entrypoint.sh && \
+    chmod +x entrypoint.sh
 
 ENV PATH=/mini-task-manager/backend/node_modules/.bin:$PATH
 

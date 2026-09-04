@@ -1,8 +1,9 @@
 import { describe, before, after, test } from "node:test";
 import assert from "node:assert/strict";
 import type { Server } from "node:http";
-import app from "../dist/app.js";
-import { pool } from "../dist/repository/infrastructure/pool.js";
+import app from "../../src/app.ts";
+import { pool } from "../../src/repository/infrastructure/pool.ts";
+import { getTestDatabaseUrl } from "../helpers/get-test-db-url.ts";
 
 describe("Verifica nuovi modulo Repository e Connection Pool - Mini Task Manager", () => {
   let server: Server;
@@ -10,6 +11,9 @@ describe("Verifica nuovi modulo Repository e Connection Pool - Mini Task Manager
   let createdTaskId: string; // Tipo stringa dato che il database lo genera come UUID
 
   before(async () => {
+    // In primis si allineano le variabili d'ambiente per il pool
+    process.env.DATABASE_URL = getTestDatabaseUrl();
+
     // Prima di tutti i test, healthcheck del database
     await pool.query("SELECT 1");
 
@@ -26,12 +30,10 @@ describe("Verifica nuovi modulo Repository e Connection Pool - Mini Task Manager
   });
 
   after(async () => {
-    // Dopo tutti i test, si procede a chiudere in modo pulito: prima il server Express, poi il Connection Pool di PostgreSQL
+    // Dopo tutti i test, si procede a chiudere in modo pulito il server Express - il Connection Pool di PostgreSQL rimane aperto per i test seguenti
     await new Promise<void>((resolve, reject) => {
       server.close((err) => (err ? reject(err) : resolve()));
     });
-
-    await pool.end();
   });
 
   test("1. Verifica Endpoint CREATE (POST /api/tasks)", async () => {

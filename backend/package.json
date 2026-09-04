@@ -10,7 +10,7 @@
     "m-create": "node-pg-migrate create -m migrations -j ts",
     "m-up": "node-pg-migrate up -m migrations --import ts-node/esm",
     "m-down": "node-pg-migrate down -m migrations --import ts-node/esm",
-    "test": "npm run build && node --test --env-file=../.env tests/*.test.ts",
+    "test": "node --import tsx --test --test-concurrency=1 --env-file=../.env tests/index.test.ts",
     "seed": "npm run build && node --env-file=../.env dist/repository/infrastructure/seed-mock-tasks.js"
   },
   "keywords": [],
@@ -32,10 +32,11 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/morgan": "^1.9.10",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.4.1",
     "@types/pg": "^8.20.0",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
+    "tsx": "^4.23.1",
     "typescript": "^7.0.2"
   }
 }
