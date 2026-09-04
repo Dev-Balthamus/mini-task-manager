@@ -6,6 +6,7 @@ const tasksRepo = new PostgresTasksRepository();
 
 // ENDPOINT CREATE
 export const createTask = async (req: Request, res: Response) => {
+  const userId = req.user!.id; // Garantito dal middleware
   const { error, value } = taskBodySchema.validate(req.body);
 
   // Qui si verifica che la validazione non fallisca
@@ -15,7 +16,7 @@ export const createTask = async (req: Request, res: Response) => {
 
   // Se la validazione avviene con successo
   try {
-    const newTask = await tasksRepo.create(value);
+    const newTask = await tasksRepo.create({ ...value, userId });
     return res.status(201).json({ msg: "Il task è stato creato!", task: newTask });
   } catch (e) {
     console.error("Errore nella creazione del nuovo task: ", e);
@@ -24,10 +25,12 @@ export const createTask = async (req: Request, res: Response) => {
 };
 
 // ENDPOINT GET-ALL
-export const getAllTasks = async (_req: Request, res: Response) => {
+export const getAllTasks = async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+
   try {
     // Qui viene letto il contenuto della tabella `tasks` sul database
-    const tasks = await tasksRepo.getAll();
+    const tasks = await tasksRepo.getAll(userId);
     // Qui il contenuto della tabella è convertito in JSON per React
     return res.status(200).json(tasks);
   } catch (e) {
@@ -38,17 +41,21 @@ export const getAllTasks = async (_req: Request, res: Response) => {
 
 //ENDPOINT GET-ONE-BY-ID
 export const getTaskById = async (req: Request, res: Response) => {
+  const userId = req.user!.id;
   // Qui viene salvato e verificato l'ID del task che si vuole trovare
   const { id } = req.params;
-  // Qui si gestisce il caso in cui non sia stato trovato un task con l'ID salvato e validato
   if (!id || typeof id !== "string") {
     return res.status(400).json({ msg: "ID non valido" });
   }
 
   try {
     // Qui si recupera il task voluto dalla tabella `tasks`
-    const task = await tasksRepo.getById(id);
-    // Qui si gestisce il caso in cui non sia stato trovato un task con l'ID salvato e validato
+    const task = await tasksRepo.getById(id, userId);
+    /*
+    Qui si gestisce il caso in cui non sia stato trovato un task con l'ID salvato e validato,
+    come pure quello in cui il task appartiene ad un altro utente ->
+    -> in entrambi i casi l'errore è 404, non 403 sul secondo
+    */
     if (!task) {
       return res.status(404).json({ msg: "Task non trovato" });
     }
@@ -62,6 +69,7 @@ export const getTaskById = async (req: Request, res: Response) => {
 
 //ENDPOINT MODIFY-ONE-BY-ID
 export const updateTask = async (req: Request, res: Response) => {
+  const userId = req.user!.id;
   // Qui viene salvato e verificato l'ID del task che si vuole trovare
   const { id } = req.params;
   if (!id || typeof id !== "string") {
@@ -77,8 +85,12 @@ export const updateTask = async (req: Request, res: Response) => {
 
   try {
     // Qui si aggiorna il task voluto dalla tabella `tasks`
-    const updatedTask = await tasksRepo.update(id, value);
-    // Qui si gestisce il caso in cui non sia stato trovato un task con l'ID salvato e validato
+    const updatedTask = await tasksRepo.update(id, userId, value);
+    /*
+    Qui si gestisce il caso in cui non sia stato trovato un task con l'ID salvato e validato,
+    come pure quello in cui il task appartiene ad un altro utente ->
+    -> in entrambi i casi l'errore è 404, non 403 sul secondo
+    */
     if (!updatedTask) {
       return res.status(404).json({ msg: "Task non trovato" });
     }
@@ -92,6 +104,7 @@ export const updateTask = async (req: Request, res: Response) => {
 
 //ENDPOINT DELETE-ONE-BY-ID
 export const deleteTask = async (req: Request, res: Response) => {
+  const userId = req.user!.id;
   // Qui viene salvato e verificato l'ID del task che si vuole trovare
   const { id } = req.params;
   if (!id || typeof id !== "string") {
@@ -100,12 +113,16 @@ export const deleteTask = async (req: Request, res: Response) => {
 
   try {
     // Qui si cancella il task voluto dalla tabella `tasks`
-    const task = await tasksRepo.delete(id);
-    // Qui si gestisce il caso in cui non sia stato trovato un task con l'ID salvato e validato
+    const task = await tasksRepo.delete(id, userId);
+    /*
+    Qui si gestisce il caso in cui non sia stato trovato un task con l'ID salvato e validato,
+    come pure quello in cui il task appartiene ad un altro utente ->
+    -> in entrambi i casi l'errore è 404, non 403 sul secondo
+    */
     if (!task) {
       return res.status(404).json({ msg: "Task non trovato" });
     }
-    return res.status(200).json({ msg: "Task trovato!", task });
+    return res.status(200).json({ msg: "Task eliminato con successo!", task });
   } catch (e) {
     // Qui si gestisce il caso in cui il task sia stato trovato ma comunque non cancellato
     console.error("Errore cancellazione task: ", e);

@@ -1,9 +1,9 @@
 import type { CreateTaskDTO, Task } from "./Task.js";
 
 export interface ITasksRepository {
-  getAll(): Promise<Task[]>;
-  getById(id: string): Promise<Task | null>;
-  create(taskData: CreateTaskDTO): Promise<Task>;
-  update(id: string, taskData: Partial<CreateTaskDTO>): Promise<Task | null>;
-  delete(id: string): Promise<Task | null>;
+  getAll(userId: string): Promise<Task[]>;
+  getById(id: string, userId: string): Promise<Task | null>;
+  create(taskData: CreateTaskDTO & { userId: string }): Promise<Task>;
+  update(id: string, userId: string, taskData: Partial<CreateTaskDTO>): Promise<Task | null>;
+  delete(id: string, userId: string): Promise<Task | null>;
 }
