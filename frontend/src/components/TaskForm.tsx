@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type Task } from "../assets/custom-hooks/useTasksJSON";
+import { type CreateTaskDTO, type Task } from "../assets/custom-hooks/useTasksJSON";
 import type { ManageModal } from "../assets/custom-hooks/useModal";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import { addTask, editTask } from "../assets/apis";
@@ -7,15 +7,18 @@ import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
 import "./TaskForm.css";
 
 function TaskForm({ isOpen, whyIsOpen, onClose }: ManageModal) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("");
-
   const { tasks, reloadTasks } = useTaskEditor();
+
+  const taskToEdit = tasks?.find((t: Task) => t.id === whyIsOpen);
+  const previousTitle = taskToEdit?.title;
+
+  const [title, setTitle] = useState(whyIsOpen !== "createTask" ? taskToEdit?.title || "" : "");
+  const [description, setDescription] = useState(whyIsOpen !== "createTask" ? taskToEdit?.description || "" : "");
+  const [priority, setPriority] = useState(whyIsOpen !== "createTask" ? taskToEdit?.priority || "" : "");
 
   async function handleTaskCreation(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    let newTask: Task;
+    let newTask: CreateTaskDTO;
 
     if (!title || !priority) {
       alert("Title and Priority fields are required.");
@@ -24,7 +27,6 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: ManageModal) {
 
     if (title && priority) {
       newTask = {
-        id: NaN,
         title,
         description,
         priority,
@@ -43,13 +45,10 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: ManageModal) {
     }
   }
 
-  const taskToEdit = tasks!.find((t: Task) => t.id === whyIsOpen)!;
-  const previousTitle = taskToEdit?.title;
-
   async function handleTaskEditing(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     const editedTask = {
-      ...taskToEdit,
+      id: taskToEdit!.id,
       title,
       description,
       priority,

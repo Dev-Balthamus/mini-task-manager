@@ -1,0 +1,31 @@
+.userForm {
+  width: 45%;
+  margin-bottom: 3vh;
+}
+
+.userFormTitle {
+  font-size: 1.3333333rem;
+  font-weight: bold;
+  color: #4e5356;
+  text-align: center;
+  margin-bottom: 3.5555555vh;
+}
+
+.userForm label {
+  color: #71797e;
+}
+
+.appNavigation {
+  font-size: 0.6666666rem;
+  color: #636a6e;
+  text-align: center;
+}
+
+.appNavigation a {
+  text-decoration: none;
+  color: #383b3e;
+}
+
+.appNavigation a:hover {
+  color: #0c0d0d;
+}
