@@ -16,7 +16,7 @@ function TaskManagerContainer() {
         <Button variant="secondary" onClick={openModal}>
           New Task
         </Button>
-        <TaskForm isOpen={isModalOpen} whyIsOpen="createTask" onClose={closeModal} />
+        {isModalOpen && <TaskForm key="createTask" isOpen={isModalOpen} whyIsOpen="createTask" onClose={closeModal} />}
       </div>
       <div className="tasksContainer">
         {tasks && <Filters />}

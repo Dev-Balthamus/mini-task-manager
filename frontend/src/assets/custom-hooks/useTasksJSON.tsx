@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 
-export const baseURL = import.meta.env.VITE_API_URL;
+export const tasksURL = import.meta.env.VITE_TASKS_URL;
 
 export interface Task {
-  id: number;
+  id: string;
   title: string;
   description: string;
   priority: string;
   executed: boolean;
 }
+
+// Tipo specifico per la fase di creazione Task, in cui l'ID è omesso
+export type CreateTaskDTO = Omit<Task, "id">;
 
 export function useTasksJSON() {
   const [loading, setLoading] = useState(false);
@@ -20,7 +23,9 @@ export function useTasksJSON() {
     setError(null);
 
     try {
-      const response = await fetch(baseURL);
+      const response = await fetch(tasksURL, {
+        credentials: "include",
+      });
       const tasks = await response.json();
 
       if (response.status !== 200) {

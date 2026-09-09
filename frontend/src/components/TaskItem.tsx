@@ -62,7 +62,7 @@ function TaskItem({ item }: { item: Task }) {
         <Button variant="secondary" onClick={openModal}>
           Modify
         </Button>
-        <TaskForm isOpen={isModalOpen} whyIsOpen={item.id} onClose={closeModal} />
+        {isModalOpen && <TaskForm key={item.id} isOpen={isModalOpen} whyIsOpen={item.id} onClose={closeModal} />}
         <Button variant="secondary" onClick={handleTaskDeletion}>
           Delete
         </Button>
