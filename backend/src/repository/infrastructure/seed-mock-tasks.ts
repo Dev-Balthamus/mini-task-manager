@@ -28,21 +28,40 @@ const initialTasks = [
   },
 ];
 
+const SEED_USER_EMAIL = "seed.user@example.com";
+// Password fittizia già sottoposta ad hash con bcrypt per ambiente dev/mock
+const MOCK_HASHED_PASSWORD = "$2b$10$e.I6SgT4W0QY5vO.1z/1e.6WzUvL3yL2f2o5S1/4zV5K.M1N1t!s";
+
 async function toSeedMockTasks() {
   console.log("🌱 Avvio del processo di seed del database...");
 
   try {
-    // Si verifica che la tabella esista
-    const tableCheck = await pool.query(`
-      SELECT EXISTS (
-        SELECT FROM information_schema.tables 
-        WHERE table_name = 'tasks'
-      );
+    // Si verifica che esistano le tabelle necessarie
+    const tablesCheck = await pool.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_name IN ('tasks', 'users');
     `);
 
-    if (!tableCheck.rows[0].exists) {
-      console.error("❌ La tabella 'tasks' non esiste. Esegui prima le migrazioni con 'npx node-pg-migrate up'.");
+    if (tablesCheck.rows.length < 2) {
+      console.error("❌ Le tabelle 'tasks' o 'users' non esistono. Esegui prima le migrazioni con 'npm run m-up'.");
       process.exit(1);
+    }
+
+    // Si recupera o crea l'utente dedicato ai dati di seed
+    let seedUserId: string;
+
+    const userRes = await pool.query("SELECT id FROM users WHERE email = $1", [SEED_USER_EMAIL]);
+
+    if (userRes.rows.length > 0) {
+      seedUserId = userRes.rows[0].id;
+    } else {
+      const newUserRes = await pool.query("INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id", [
+        SEED_USER_EMAIL,
+        MOCK_HASHED_PASSWORD,
+      ]);
+      seedUserId = newUserRes.rows[0].id;
+      console.log(`👤 Creato utente di seed: ${SEED_USER_EMAIL}`);
     }
 
     // Si inseriscono i mock tasks (facendo il controllo di idempotenza sul titolo)
@@ -51,14 +70,14 @@ async function toSeedMockTasks() {
     for (const task of initialTasks) {
       const result = await pool.query(
         `
-        INSERT INTO tasks (title, description, priority, executed)
-        SELECT $1::varchar, $2::varchar, $3::task_priority, $4::boolean
+        INSERT INTO tasks (title, description, priority, executed, user_id)
+        SELECT $1::varchar, $2::varchar, $3::task_priority, $4::boolean, $5::uuid
         WHERE NOT EXISTS (
-          SELECT 1 FROM tasks WHERE title = $1::varchar
+          SELECT 1 FROM tasks WHERE title = $1::varchar AND user_id = $5::uuid
         )
         RETURNING id;
         `,
-        [task.title, task.description, task.priority, task.executed],
+        [task.title, task.description, task.priority, task.executed, seedUserId],
       );
 
       if (result.rowCount && result.rowCount > 0) {

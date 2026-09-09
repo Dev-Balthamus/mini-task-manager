@@ -1,6 +1,7 @@
 import { describe, before, after, test } from "node:test";
 import assert from "node:assert/strict";
 import type { Server } from "node:http";
+import { execSync } from "node:child_process";
 import bcrypt from "bcrypt";
 import app from "../../src/app.ts";
 import { pool } from "../../src/repository/infrastructure/pool.ts";
@@ -9,6 +10,15 @@ import { getTestDatabaseUrl } from "../helpers/get-test-db-url.ts";
 describe("Verifica Tabella Users e Autenticazione - Mini Task Manager", () => {
   let server: Server;
   let baseUrl: string;
+
+  // Helper per eseguire node-pg-migrate ereditando process.env ed esplicitando la dbUrl
+  const runMigrate = (action: string) => {
+    const dbUrl = getTestDatabaseUrl();
+    execSync(`npx node-pg-migrate ${action} -m migrations --import tsx --database-url "${dbUrl}"`, {
+      stdio: "inherit",
+      env: { ...process.env, DATABASE_URL: dbUrl },
+    });
+  };
 
   const mockUser = {
     email: "test.dev@example.com",
@@ -40,6 +50,8 @@ describe("Verifica Tabella Users e Autenticazione - Mini Task Manager", () => {
     await new Promise<void>((resolve, reject) => {
       server.close((err) => (err ? reject(err) : resolve()));
     });
+
+    runMigrate("up 1");
   });
 
   test("1. Verifica struttura tabella 'users' nel database", async () => {

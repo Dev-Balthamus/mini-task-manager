@@ -38,6 +38,15 @@ const command = isWindows
   : `grep -ri --exclude-dir={node_modules,dist} --exclude="data-migration.test.ts" "tasks.json" .`;
 
 describe("Verifica Migrazione Dati - Mini Task Manager", () => {
+  // Helper per eseguire node-pg-migrate ereditando process.env ed esplicitando la dbUrl
+  const runMigrate = (action: string) => {
+    const dbUrl = getTestDatabaseUrl();
+    execSync(`npx node-pg-migrate ${action} -m migrations --import tsx --database-url "${dbUrl}"`, {
+      stdio: "inherit",
+      env: { ...process.env, DATABASE_URL: dbUrl },
+    });
+  };
+
   before(async () => {
     // 1. Allineamento centralizzato dell'URL del Database
     process.env.DATABASE_URL = getTestDatabaseUrl();
@@ -55,6 +64,8 @@ describe("Verifica Migrazione Dati - Mini Task Manager", () => {
   after(async () => {
     // Dopo il test, pulizia del database e chiusura del Connection Pool
     await pool.query("DELETE FROM tasks WHERE title LIKE 'Test Task Migration%'");
+
+    runMigrate("up 1");
   });
 
   test("1. Verifica migrazione dati dal file JSON al database PostgreSQL, e successiva eliminazione di cartella `data`", async () => {
