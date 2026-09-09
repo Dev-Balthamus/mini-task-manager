@@ -6,10 +6,10 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --exec \"node --loader ts-node/esm\" src/server.ts",
+    "dev": "nodemon --exec \"node --import tsx\" src/server.ts",
     "m-create": "node-pg-migrate create -m migrations -j ts",
-    "m-up": "node-pg-migrate up -m migrations --import ts-node/esm",
-    "m-down": "node-pg-migrate down -m migrations --import ts-node/esm",
+    "m-up": "node ./node_modules/node-pg-migrate/bin/node-pg-migrate up -m migrations --import tsx",
+    "m-down": "node ./node_modules/node-pg-migrate/bin/node-pg-migrate down -m migrations --import tsx",
     "test": "node --import tsx --test --test-concurrency=1 --env-file=../.env tests/index.test.ts",
     "seed": "npm run build && node --env-file=../.env dist/repository/infrastructure/seed-mock-tasks.js"
   },
@@ -40,7 +40,6 @@
     "@types/node": "^26.1.1",
     "@types/pg": "^8.20.0",
     "nodemon": "^3.1.14",
-    "ts-node": "^10.9.2",
     "tsx": "^4.23.1",
     "typescript": "^7.0.2"
   }

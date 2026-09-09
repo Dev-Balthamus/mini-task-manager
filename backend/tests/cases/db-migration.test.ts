@@ -10,7 +10,7 @@ describe("Verifica Migrazione Database - Mini Task Manager", () => {
 
   // Helper per eseguire node-pg-migrate ereditando process.env ed esplicitando la dbUrl
   const runMigrate = (action: string) => {
-    execSync(`npx node-pg-migrate ${action} -m migrations --import ts-node/esm --database-url "${dbUrl}"`, {
+    execSync(`npx node-pg-migrate ${action} -m migrations --import tsx --database-url "${dbUrl}"`, {
       stdio: "inherit",
       env: { ...process.env, DATABASE_URL: dbUrl }, // Garantisce l'allineamento perfetto delle variabili d'ambiente!
     });
@@ -18,9 +18,8 @@ describe("Verifica Migrazione Database - Mini Task Manager", () => {
 
   // Prima di tutti i test, inizializzazione del Pool
   before(async () => {
-    // Risoluzione centralizzata dell'URL (Gestisce i 3 scenari: Docker, CI, Localhost)
+    // Risoluzione centralizzata dell'URL
     dbUrl = getTestDatabaseUrl();
-    process.env.DATABASE_URL = dbUrl;
 
     // Single Source of Truth: si passa direttamente la connectionString al Pool
     pool = new Pool({
@@ -36,8 +35,8 @@ describe("Verifica Migrazione Database - Mini Task Manager", () => {
 
   // Finiti tutti i test, svuotamento del Pool e chiusura delle connessioni
   after(async () => {
-    // Si ri-eseguono tutte le migrazioni sul database corretto prima di passare ai test successivi
-    runMigrate("up");
+    // Si ri-eseguono, sul database corretto, solo le prime 2 migrazioni necessarie prima di passare ai test del case `api-and-pool.test.ts`
+    runMigrate("up 2");
   });
 
   test("1. Applicazione dello schema (UP di 1 passo)", async () => {
