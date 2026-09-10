@@ -24,18 +24,6 @@ export const up = (pgm: MigrationBuilder): void => {
       type: "varchar(255)",
       notNull: false,
     },
-    /*
-    created_at: {
-      type: "timestamp",
-      notNull: true,
-      default: pgm.func("current_timestamp"),
-    },
-    updated_at: {
-      type: "timestamp",
-      notNull: true,
-      default: pgm.func("current_timestamp"),
-    },
-    */
     priority: {
       type: "task_priority",
       notNull: true,
@@ -45,6 +33,16 @@ export const up = (pgm: MigrationBuilder): void => {
       type: "boolean",
       notNull: true,
       default: false,
+    },
+    created_at: {
+      type: "timestamp",
+      notNull: true,
+      default: pgm.func("current_timestamp"),
+    },
+    updated_at: {
+      type: "timestamp",
+      notNull: true,
+      default: pgm.func("current_timestamp"),
     },
   });
 };

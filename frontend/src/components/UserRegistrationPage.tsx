@@ -23,7 +23,7 @@ function UserRegistrationPage() {
     let newUser: UserCredentialsDTO;
     setError(null);
 
-    if (!email || !password) {
+    if (!email || !password || !confirmPassword) {
       setError("Compilare tutti i campi per procedere.");
       return;
     }
@@ -34,16 +34,16 @@ function UserRegistrationPage() {
       return;
     }
 
-    if (email && password) {
+    if (email && password && confirmPassword) {
       setLoading(true);
       newUser = { email, password };
 
-      const message = await registerUser(newUser);
+      const result = await registerUser(newUser);
 
-      if (message.includes("completata")) {
-        setSuccess(message);
-      } else if (message.includes("errore")) {
-        setError(message);
+      if (result.success) {
+        setSuccess(result.message);
+      } else {
+        setError(result.message);
       }
 
       setLoading(false);

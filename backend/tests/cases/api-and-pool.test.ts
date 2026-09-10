@@ -20,24 +20,24 @@ describe("Verifica nuovi modulo Repository e Connection Pool - Mini Task Manager
     await pool.query("SELECT 1");
 
     /*
-        Per far sì che questo test riesca in base all'attuale struttura dell'app,
-        si aggiunge una colonna `user_id` alla tabella tasks
-        */
+    Per far sì che questo test riesca in base all'attuale struttura dell'app,
+    si aggiunge una colonna `user_id` alla tabella tasks
+    */
     await pool.query(`
-          ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "user_id" uuid;
-        `);
+      ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "user_id" uuid;
+    `);
 
     /*
-        Per far sì che questo test riesca in base all'attuale struttura dell'app,
-        si genera direttamente il mockToken JWT per il test
-        */
+    Per far sì che questo test riesca in base all'attuale struttura dell'app,
+    si genera direttamente il mockToken JWT per il test
+    */
     const mockUserId = "00000000-0000-0000-0000-000000000000";
     const mockToken = jwt.sign({ userId: mockUserId, email: "mock.user@test.com" }, "super-secret-key-change-in-prod");
 
     /*
-        Per far sì che questo test riesca in base all'attuale struttura dell'app,
-        si formatta il cookie httpOnly come se lo avesse impostato la rotta di login
-        */
+    Per far sì che questo test riesca in base all'attuale struttura dell'app,
+    si formatta il cookie httpOnly come se lo avesse impostato la rotta di login
+    */
     authCookie = `token=${mockToken}`;
 
     // Avvio del server Express su porta dinamica (noi scriviamo 0, ma il sistema assegna una porta libera casuale)
@@ -55,8 +55,8 @@ describe("Verifica nuovi modulo Repository e Connection Pool - Mini Task Manager
   after(async () => {
     // Pulizia di fine test: si rimuove la colonna `user_id` per lasciare il database pronto per le migrazioni successive
     await pool.query(`
-          ALTER TABLE "tasks" DROP COLUMN IF EXISTS "user_id";
-        `);
+      ALTER TABLE "tasks" DROP COLUMN IF EXISTS "user_id";
+    `);
 
     // Dopo tutti i test, si procede a chiudere in modo pulito il server Express - il Connection Pool di PostgreSQL rimane aperto per i test seguenti
     await new Promise<void>((resolve, reject) => {

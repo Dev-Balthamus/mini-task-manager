@@ -8,12 +8,14 @@ export interface Task {
   description: string;
   priority: string;
   executed: boolean;
+  created_at: string;
+  updated_at?: string;
 }
 
 // Tipo specifico per la fase di creazione Task, in cui l'ID è omesso
-export type CreateTaskDTO = Omit<Task, "id">;
+export type CreateTaskDTO = Omit<Task, "id" | "created_at" | "updated_at">;
 
-export function useTasksJSON() {
+export function useTasks() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState<Task[] | null>(null);

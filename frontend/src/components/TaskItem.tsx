@@ -1,6 +1,6 @@
 import { type ChangeEvent } from "react";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
-import type { Task } from "../assets/custom-hooks/useTasksJSON";
+import type { Task } from "../assets/custom-hooks/useTasks";
 import { useModal } from "../assets/custom-hooks/useModal";
 import { Button, ListGroup } from "react-bootstrap";
 import TaskForm from "./TaskForm";

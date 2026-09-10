@@ -1,48 +1,53 @@
-# Mini Task Manager v. 1.3.0
+# Mini Task Manager v. 2.0.0
 
-**Mini Task Manager** è un progetto di app per la gestione di compiti e/o attività da svolgere.
-Allo stadio di sviluppo corrente, l'app permette ad un utente unico di annotare i propri task, salvarli in una lista ri-ordinabile, tracciarne lo stato di esecuzione, cancellarli dalla lista qualora si voglia liberare spazio.
+**Mini Task Manager** è un progetto di app per la gestione di compiti e/o attività da svolgere.<br>
+Allo stadio di sviluppo corrente, l'app permette a più utenti di annotare i propri task, salvarli in una lista ri-ordinabile, tracciarne lo stato di esecuzione, cancellarli dalla lista qualora si voglia liberare spazio.<br>
+Ogni utente che voglia utilizzare il Mini Task Manager deve avere il proprio account. Ad ora per registrare un account è sufficiente che sia impostata la coppia di credenziali formata da e-mail e password, con cui l'utente potrà poi accedere alla sezione per gestire i suoi task salvati.
 
 <br>
 
 ## Caratteristiche principali
 
-- **Creare i task**: L'utente, cliccando su apposito pulsante, apre un form attraverso cui definire le specifiche di un singolo task: titolo (obbligatorio) - descrizione (opzionale) - priorità (obbligatorio). Una volta soddisfatto, può salvare il task, o semplicemente chiudere il form in caso di ripensamento.
-- **Ordinare i task**: L'utente può ordinare i task in base alla priorità definita (bassa - media - alta) o allo stato di esecuzione (eseguito o no). Task con priorità e/o stato di esecuzione uguali tra loro, sono ordinati da quello creato per primo a quello creato per ultimo.
+- **A ogni utente i suoi tasks**: L'app si apre su una pagina con un form in cui l'utente inserisce le proprie credenziali del proprio account già registrato e poi, cliccando un apposito pulsante, effettua l'accesso allo spazio di gestione dei suoi tasks.
+- **Registrare un utente**: Se un individuo voglia fruire del Mini Task Manager ma non abbia già registrato un account, dalla pagina dell'accesso può navigare a quella di registrazione, che presenta un diverso form mediante il quale l'utente imposta la coppia di credenziali del proprio account. I dati dell'account vengono salvati nella tabella dedicata del database PostgreSQL creato per l'app, occupandone una riga, le cui colonne contengono ognuna un solo campo dei dati dell'utente. Al momento in cui viene creato un nuovo utente, il database genera un ID univoco per esso, il cui valore poi verrà associato ad ogni task creato dall'utente nelle proprie sessioni di lavoro con l'app.
+- **Creare i task**: L'utente, cliccando su apposito pulsante, apre un form attraverso cui definire le specifiche di un singolo task: titolo (obbligatorio) - descrizione (opzionale) - priorità (obbligatorio) - eseguito (opzionale, di default impostato come falsy, cioè come "non eseguito"). Una volta soddisfatto, può salvare il task, o semplicemente chiudere il form in caso di ripensamento.
+- **Ordinare i task**: L'utente può ordinare i task in base alla priorità definita (bassa - media - alta) o allo stato di esecuzione (eseguito o no). Tasks con priorità e/o stato di esecuzione uguali tra loro, sono ordinati da quello creato per primo a quello creato per ultimo.
 - **Modificare o eliminare i task**: L'utente può modificare o eliminare ogni singolo task, cliccando sull'apposito pulsante posto nello spazio del task nella lista. Cliccando per modificare un task, si riapre il form per definirne le specifiche: salvarlo senza avere apportato modifiche lascia il task con le specifiche di prima della modifica. Cliccando per eliminare un task, si apre un avviso in cui si chiede conferma o no prima di procedere all'effettiva eliminazione del task dall'elenco di quelli in memoria.
-- **Salvataggio task**: Il salvataggio dei task avviene in un file JSON, ciascuno come oggetto entro un unico array per l'intero file.
+- **Salvataggio task**: Il salvataggio dei task avviene nella tabella dedicata del database PostgreSQL creato per l'app, ciascuno che occupa una riga, le cui colonne contengono ognuna un solo campo dei dati del task. Tra le colonne ce n'è una in cui viene salvato l'ID dell'utente a cui è associato il singolo task: nessun utente può visualizzare/modificare/eliminare i task di nessun altro utente.
+- **Database relazionale per gli utenti e i tasks**: I dati relativi a tutti gli utenti dell'applicazione, e a tutti i tasks, nonché l'associazione rigida dei secondi ai primi, sono salvati e gestiti mediante un database di tipo relazionale, per implementare il quale si è scelto di utilizzare PostgreSQL.
 
 <br>
 
 ## Tecnologie utilizzate
 
-- Frontend: TypeScript, React, Vite, HTML, CSS;
-- Backend: Node, Express.
-- DevOps: Docker.
+- **Frontend**: TypeScript, React, Vite, nginx, HTML, CSS.
+- **Backend**: Node, Express.
+- **Database**: PostgreSQL.
+- **DevOps**: Docker.
 
 <br>
 
 ## Come configurare e avviare il progetto
 
-Il progetto dell'app Mini Task Manager consta di un repository unico, al cui primo livello di articolazione si distinguono una cartella che contiene tutto il Frontend e una che contiene tutto il Backend.
+Il progetto dell'app **Mini Task Manager** consta di un repository unico, al cui primo livello di articolazione si distinguono una cartella che contiene tutto il Frontend e una che contiene tutto il Backend.
 Tutte le volte che il progetto sia clonato ex novo su macchina locale, vi sono delle azioni preliminari che vanno compiute.
-
-La prima riguarda sia il Frontend sia il Backend, ed è: l'installazione delle dipendenze del progetto. Essendo diverse tra le due parti del progetto, il comando da terminale specifico per questo scopo, ossia npm install, va eseguito due volte:
+La prima riguarda sia il Frontend sia il Backend, ed è: l'installazione delle dipendenze del progetto. Essendo diverse tra le due parti del progetto, il comando da terminale specifico per questo scopo, ossia **npm install**, va eseguito due volte:
 
 - una quando il terminale punta a _"./mini-task-manager/frontend/"_, per installare le dipendenze del Frontend
 - una quando il terminale punta a _"./mini-task-manager/backend/"_, per installare le dipendenze del Backend
 
-La seconda riguarda solo il Frontend, perché in esso l'URL principale delle API del progetto è codificato come variabile d'ambiente. Pertanto, una volta clonato ex novo il progetto, si deve:
+La seconda riguarda il rendere disponibili, sia per il Frontend sia per il Backend sia per il Database, le variabili d'ambiente. Pertanto, una volta clonato ex novo il progetto, si deve:
 
+- nella directory _"./mini-task-manager/"_, duplicare il file **.env.example** e rinominare la copia in _.env_;
 - nella directory _"./mini-task-manager/frontend/"_, duplicare il file **.env.example** e rinominare la copia in _.env_;
-- aprire il nuovo file **.env** per rimuovere il commento e aggiornare i placeholders nel valore della variabile d'ambiente con quelli effettivi configurati sulla macchina in uso e la copia del progetto in esecuzione.
+- aprire i nuovi file **.env** per rimuovere i commenti e aggiornare i placeholders nel valore della variabile d'ambiente con quelli effettivi configurati sulla macchina in uso e la copia del progetto in esecuzione.
 
 La terza è dovuta al fatto che l'intero progetto si presenta Dockerizzato (cioè vede l'implementazione di Docker).
 Si fa dunque presente ora che, al fine di avviare il progetto, è necessario avere almeno il Docker Engine installato sulla macchina in uso.
-Verificata tale pre-condizione, si apre un terminale che punta a _"./mini-task-manager/"_ sul quale eseguire il comando docker compose up -d --build.
+Verificata tale pre-condizione, si apre un terminale che punta a _"./mini-task-manager/"_ sul quale eseguire il comando **docker compose up -d --build**.
 Grazie a questo comando, Docker provvederà a:
 
-- costruire sulla macchina le immagini dei due container, uno per il Frontend e uno per il Backend, dell'applicazione;
+- costruire sulla macchina le immagini dei tre container, uno per il Frontend, uno per il Backend e uno per il Database, dell'applicazione;
 - costruire i container ed eventuali volumi ad essi collegati, oltre che ad aprire le porte definite per collegarli in rete;
 - avviare i container in background.
 

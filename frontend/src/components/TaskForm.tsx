@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type CreateTaskDTO, type Task } from "../assets/custom-hooks/useTasksJSON";
+import { type CreateTaskDTO, type Task } from "../assets/custom-hooks/useTasks";
 import type { ManageModal } from "../assets/custom-hooks/useModal";
 import { useTaskEditor } from "../assets/contexts/TaskEditorContext";
 import { addTask, editTask } from "../assets/apis";
@@ -48,7 +48,7 @@ function TaskForm({ isOpen, whyIsOpen, onClose }: ManageModal) {
   async function handleTaskEditing(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     const editedTask = {
-      id: taskToEdit!.id,
+      ...taskToEdit!,
       title,
       description,
       priority,
