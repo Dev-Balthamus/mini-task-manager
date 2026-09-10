@@ -1,5 +1,5 @@
 import { ListGroup } from "react-bootstrap";
-import type { Task } from "../assets/custom-hooks/useTasksJSON";
+import type { Task } from "../assets/custom-hooks/useTasks";
 import TaskItem from "./TaskItem";
 import "./TasksList.css";
 

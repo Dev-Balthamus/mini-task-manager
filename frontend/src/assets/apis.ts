@@ -1,4 +1,4 @@
-import { tasksURL, type CreateTaskDTO, type Task } from "./custom-hooks/useTasksJSON";
+import { tasksURL, type CreateTaskDTO, type Task } from "./custom-hooks/useTasks";
 import { authURL, type UserCredentialsDTO, type UserIdentityDTO } from "./custom-hooks/useUser";
 
 export async function registerUser(user: UserCredentialsDTO) {
@@ -15,9 +15,12 @@ export async function registerUser(user: UserCredentialsDTO) {
       throw new Error(data.msg || "Impossibile completare la registrazione.");
     }
 
-    return "Registrazione completata! Ora è possibile effettuare l'accesso.";
+    return { success: true, message: "Registrazione completata! Ora è possibile effettuare l'accesso." };
   } catch (e: unknown) {
-    return e instanceof Error ? e.message : "Si è verificato un errore nel processo di registrazione.";
+    return {
+      success: false,
+      message: e instanceof Error ? e.message : "Si è verificato un errore nel processo di registrazione.",
+    };
   }
 }
 

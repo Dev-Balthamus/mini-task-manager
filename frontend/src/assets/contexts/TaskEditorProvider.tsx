@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { useTasksJSON } from "../custom-hooks/useTasksJSON";
+import { useTasks } from "../custom-hooks/useTasks";
 import { type PriorityCriterion, type ExecutionCriterion, TaskEditorContext } from "./TaskEditorContext";
 
 interface TaskEditorProps {
@@ -7,7 +7,7 @@ interface TaskEditorProps {
 }
 
 export const TaskEditor = ({ children }: TaskEditorProps) => {
-  const { loading, error, data, onReloadTasks } = useTasksJSON();
+  const { loading, error, data, onReloadTasks } = useTasks();
   const [priority, setPriority] = useState<PriorityCriterion>("");
   const [execution, setExecution] = useState<ExecutionCriterion>("");
 
@@ -64,9 +64,10 @@ export const TaskEditor = ({ children }: TaskEditorProps) => {
         if (priorityANum !== priorityBNum) return priorityANum - priorityBNum;
       }
 
-      if (a.id !== b.id) return a.id < b.id ? -1 : 1;
-
-      return 0;
+      // Ordine di default: incrementale per data di creazione
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return dateA - dateB;
     });
 
     return tasksCopy;

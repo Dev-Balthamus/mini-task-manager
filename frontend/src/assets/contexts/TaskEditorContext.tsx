@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { type Task } from "../custom-hooks/useTasksJSON";
+import { type Task } from "../custom-hooks/useTasks";
 
 export type PriorityCriterion = "" | "low" | "high";
 export type ExecutionCriterion = "" | "executed" | "pending";
