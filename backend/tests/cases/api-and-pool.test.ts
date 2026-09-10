@@ -25,8 +25,6 @@ describe("Verifica nuovi modulo Repository e Connection Pool - Mini Task Manager
     */
     await pool.query(`
       ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "user_id" uuid;
-      ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT CURRENT_TIMESTAMP;
-      ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "updated_at" timestamp DEFAULT CURRENT_TIMESTAMP;
     `);
 
     /*
@@ -58,8 +56,6 @@ describe("Verifica nuovi modulo Repository e Connection Pool - Mini Task Manager
     // Pulizia di fine test: si rimuove la colonna `user_id` per lasciare il database pronto per le migrazioni successive
     await pool.query(`
       ALTER TABLE "tasks" DROP COLUMN IF EXISTS "user_id";
-      ALTER TABLE "tasks" DROP COLUMN IF EXISTS "created_at";
-      ALTER TABLE "tasks" DROP COLUMN IF EXISTS "updated_at";
     `);
 
     // Dopo tutti i test, si procede a chiudere in modo pulito il server Express - il Connection Pool di PostgreSQL rimane aperto per i test seguenti
